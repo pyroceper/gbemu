@@ -2,6 +2,7 @@
 #define CPU_H
 
 #include <cstdint>
+#include <cstdio>
 
 union Register
 {
@@ -17,6 +18,19 @@ class CPU
 {
     public:
         void execute(uint8_t opcode);
+        Register reg_pc;
+        Register reg_sp;
+
+        int cycles {};
+
+    private:
+        Register reg_af;
+        Register reg_bc;
+        Register reg_de;
+        Register reg_hl;
+        
+        uint8_t reg_flag;// Z N H C
+
 };
 
 

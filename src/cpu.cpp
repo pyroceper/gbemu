@@ -2,5 +2,5 @@
 
 void CPU::execute(uint8_t opcode)
 {
-    
+    cycles += 8;
 }
