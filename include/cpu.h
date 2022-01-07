@@ -3,6 +3,8 @@
 
 #include <cstdint>
 #include <cstdio>
+#include <fmt/core.h>
+
 
 union Register
 {
@@ -23,6 +25,9 @@ class CPU
 
         int cycles {};
 
+        //temp
+        FILE *rom = nullptr;
+
     private:
         Register reg_af;
         Register reg_bc;
@@ -30,6 +35,10 @@ class CPU
         Register reg_hl;
         
         uint8_t reg_flag;// Z N H C
+
+        //instructions
+        void ld_nn_n(uint8_t *reg);
+        void ld_rr(uint8_t *reg1, uint8_t *reg2);
 
 };
 

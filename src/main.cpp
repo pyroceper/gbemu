@@ -18,29 +18,28 @@ int main()
     char step {};
     uint8_t opcode {};
 
-    FILE *rom = fopen("tests/cpu_instrs.gb","rb");
-    if(rom == nullptr)
+    cpu.rom = fopen("tests/cpu_instrs.gb","rb");
+    if(cpu.rom == nullptr)
         return 1;
 
     fmt::print("ROM Loaded!\n");
 
-    fseek(rom, cpu.reg_pc.reg, SEEK_SET);
 
     do {
        step = getchar();
 
-       fread(&opcode, sizeof(uint8_t), 1, rom);
+       fseek(cpu.rom, cpu.reg_pc.reg, SEEK_SET);
+       fread(&opcode, sizeof(uint8_t), 1, cpu.rom);
        
        fmt::print("PC: {0:#x}\n", cpu.reg_pc.reg);
        fmt::print("opcode: {0:#x}\n", opcode);
         
        cpu.execute(opcode); 
-       cpu.reg_pc.reg++;        
 
     }while(step != 'e');
 
-    fclose(rom);
-    rom = nullptr;
+    fclose(cpu.rom);
+    cpu.rom = nullptr;
 
     return 0;
 }
