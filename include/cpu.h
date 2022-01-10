@@ -5,6 +5,7 @@
 #include <cstdio>
 #include <fmt/core.h>
 
+#include "memory.h"
 
 union Register
 {
@@ -25,8 +26,7 @@ class CPU
 
         int cycles {};
 
-        //temp
-        FILE *rom = nullptr;
+        Memory *memory = nullptr;
 
     private:
         Register reg_af;

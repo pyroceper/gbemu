@@ -103,7 +103,7 @@ void CPU::ld_nn_n(uint8_t *reg)
 {
     //read value
     uint8_t value {};
-    fread(&value, sizeof(uint8_t), 1, rom);
+    value = memory->cartridge[reg_pc.reg];
 
     *reg = value;
     cycles += 8;
