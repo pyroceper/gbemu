@@ -11,7 +11,7 @@ int main()
 
     CPU cpu;
 
-    Memory memory("tests/cpu_instrs.gb");
+    Memory memory("tests/individual/06-ld r,r.gb");
     if(memory.rom_load_fail)
         return 1;
 
