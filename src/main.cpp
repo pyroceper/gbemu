@@ -17,7 +17,8 @@ int main()
 
     cpu.memory = &memory;
     
-    cpu.reg_pc.reg = 0x100;
+    //temp
+    cpu.reg_pc.reg = 0x200; //for test rom //0x100
     cpu.reg_sp.reg = 0xFFFE;
 
 

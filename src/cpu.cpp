@@ -121,6 +121,11 @@ void CPU::execute(uint8_t opcode)
                 ld_rr(&reg_bc.hi, &reg_hl.lo);
             }
             break;
+        case 0x47: // LD B, A
+            {
+                ld_rr(&reg_bc.hi, &reg_af.hi);
+            }
+            break;
         case 0x48: // LD C, B
             {
                 ld_rr(&reg_bc.lo, &reg_bc.hi);
@@ -308,6 +313,50 @@ void CPU::execute(uint8_t opcode)
                 ld_r_hl(&reg_hl.lo);
             }
             break;
+        
+        case 0x70: // LD (HL), B
+            {
+                ld_hl_r(&reg_bc.hi);
+            }
+            break;
+        case 0x71: // LD (HL), C
+            {
+                ld_hl_r(&reg_bc.lo);
+            }
+            break;        
+        case 0x72: // LD (HL), D
+            {
+                ld_hl_r(&reg_de.hi);
+            }
+            break;
+        case 0x73: // LD (HL), E
+            {
+                ld_hl_r(&reg_de.lo);
+            }
+            break;
+        case 0x74: // LD (HL), H
+            {
+                ld_hl_r(&reg_hl.hi);
+            }
+            break;
+        case 0x75: // LD (HL), L
+            {
+                ld_hl_r(&reg_hl.lo);
+            }
+            break;
+        //temp
+        case 0x36: // LD (HL), n
+            {
+                reg_pc.reg++;
+                uint8_t n = memory->cartridge[reg_pc.reg];
+
+                memory->cartridge[reg_hl.reg] = n;
+
+                cycles += 12;
+                reg_pc.reg++;
+                
+            }
+            break;
 
         default: 
         {
@@ -344,6 +393,15 @@ void CPU::ld_rr(uint8_t *reg1, uint8_t *reg2)
 void CPU::ld_r_hl(uint8_t *reg)
 {
     *reg = memory->cartridge[reg_hl.reg];
+
+    cycles += 8;
+    reg_pc.reg++;
+}
+//temp
+//ld (HL), r
+void CPU::ld_hl_r(uint8_t *reg)
+{
+    memory->cartridge[reg_hl.reg] =  reg;
 
     cycles += 8;
     reg_pc.reg++;

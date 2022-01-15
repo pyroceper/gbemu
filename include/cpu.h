@@ -41,6 +41,7 @@ class CPU
         void ld_rr(uint8_t *reg1, uint8_t *reg2);
 
         void ld_r_hl(uint8_t *reg);
+        void ld_hl_r(uint8_t *reg);
 
 };
 
