@@ -469,6 +469,37 @@ void CPU::execute(uint8_t opcode)
             }
             break;
 
+
+        case 0xF2: // LD A, (FF00 + C)
+            {
+                cycles += 8;
+
+                reg_af.hi = memory->read(0xFF00 | reg_bc.lo);
+                reg_pc.reg++;
+            }
+            break;
+        case 0xE2: // LD (FF00 + C), A
+            {
+                cycles += 8;
+
+                memory->write(0xFF00 | reg_bc.lo, reg_af.hi);
+                reg_pc.reg++;
+            }
+            break;
+    
+        case 0x3A: // LDD A, (HL)
+            {
+                cycles += 8;
+
+                reg_af.hi = memory->read(reg_hl.reg);
+                reg_hl.reg--;
+
+                reg_pc.reg++;
+            }
+            break;
+        
+
+
         default: 
         {
             fmt::print("OPCODE UNKNOWN\n");
