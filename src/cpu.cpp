@@ -529,6 +529,29 @@ void CPU::execute(uint8_t opcode)
             }
             break;
 
+        case 0xE0: // LD (FF00 + n), A
+            {
+                cycles += 12;
+
+                reg_pc.reg++;
+                uint8_t n = memory->read(reg_pc.reg);
+
+                memory->write((0xFF00 | n), reg_af.hi);
+                reg_pc.reg++;
+            }
+            break;
+        case 0xF0: // LD A, (FF00 + n)
+            {
+                cycles += 12;
+
+                reg_pc.reg++;
+                uint8_t n = memory->read(reg_pc.reg);
+
+                reg_af.hi = memory->read((0xFF00 | n));
+                reg_pc.reg++;
+            }
+            break;
+
 
         default: 
         {
