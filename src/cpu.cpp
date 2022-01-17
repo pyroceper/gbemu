@@ -321,6 +321,71 @@ void CPU::execute(uint8_t opcode)
             }   
             break;
         
+        case 0x4F: // LD C, A
+            {
+                ld_rr(&reg_bc.lo, &reg_af.hi);
+            }
+            break;
+        case 0x57: // LD D, A
+            {
+                ld_rr(&reg_de.hi, &reg_af.hi);
+            }
+            break;
+        case 0x5F: // LD E, A
+            {
+                ld_rr(&reg_de.lo, &reg_af.hi);
+            }
+            break;
+        case 0x67: // LD H, A
+            {
+                ld_rr(&reg_hl.hi, &reg_af.hi);
+            }
+            break;
+        case 0x6F:// LD L, A
+            {
+                ld_rr(&reg_hl.lo, &reg_af.hi);
+            }
+            break;
+        
+        //temp
+        case 0x02: //LD (BC), A
+            {
+                cycles += 8;
+
+                memory->write(reg_bc.reg, reg_af.hi);
+                reg_pc.reg++;
+            }
+            break;
+        case 0x12: //LD (DE), A
+            {
+                cycles += 8;
+
+                memory->write(reg_de.reg, reg_af.hi);
+                reg_pc.reg++;
+            }
+            break;
+        case 0x77: //LD (HL), A
+            {
+                cycles += 8;
+
+                memory->write(reg_hl.reg, reg_af.hi);
+                reg_pc.reg++;
+            }
+            break;
+        case 0xEA: //LD (nn), A
+            { 
+                cycles += 16;
+
+                reg_pc.reg++;
+                uint8_t n1 = memory->read(reg_pc.reg);
+                reg_pc.reg++;
+                uint8_t n2 = memory->read(reg_pc.reg);
+                uint16_t nn = (n2 << 8) | n1;
+
+                memory->write(nn, reg_af.hi);
+                reg_pc.reg++;                
+            }
+            break;
 
         
         case 0x7E: // LD A, (HL)
