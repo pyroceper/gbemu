@@ -487,7 +487,7 @@ void CPU::execute(uint8_t opcode)
             }
             break;
     
-        case 0x3A: // LDD A, (HL)
+        case 0x3A: // LD A, (HL-)
             {
                 cycles += 8;
 
@@ -497,7 +497,37 @@ void CPU::execute(uint8_t opcode)
                 reg_pc.reg++;
             }
             break;
+        case 0x32: // LD (HL-), A
+            {
+                cycles += 8;
+                
+                memory->write(reg_hl.reg,  reg_af.hi);
+                reg_hl.reg--;
+
+                reg_pc.reg++;
+            }
+            break;
         
+        case 0x2A: // LD A, (HL+)
+            {
+                cycles += 8;
+
+                reg_af.hi = memory->read(reg_hl.reg);
+                reg_hl.reg++;
+
+                reg_pc.reg++;
+            }
+            break;
+        case 0x22: // LD (HL+), A
+            {
+                cycles += 8;
+
+                memory->write(reg_hl.reg, reg_af.hi);
+                reg_hl.reg++;
+
+                reg_pc.reg++;
+            }
+            break;
 
 
         default: 
