@@ -277,6 +277,51 @@ void CPU::execute(uint8_t opcode)
             }
             break;  
 
+        //temp
+        case 0x0A: // LD A, (BC)
+            {
+                cycles += 8;
+
+                reg_af.hi = memory->read(reg_bc.reg);
+                reg_pc.reg++;
+            }
+            break;
+        case 0x1A: // LD A, (DE)
+            {
+                cycles += 8;
+
+                reg_af.hi = memory->read(reg_de.reg);
+                reg_pc.reg++;
+            }
+            break;
+        case 0xFA: // LD A, (nn)
+            {
+                cycles += 16;
+
+                reg_pc.reg++;
+                uint8_t n1 = memory->read(reg_pc.reg);
+                reg_pc.reg++;
+                uint8_t n2 = memory->read(reg_pc.reg);
+                uint16_t nn = (n2 << 8) | n1;
+
+                reg_af.hi = memory->read(nn);
+                reg_pc.reg++;
+            }
+            break;
+        case 0x3E: // LD A, n
+            {
+                cycles += 8;
+
+                reg_pc.reg++;
+                uint8_t n = memory->read(reg_pc.reg);
+
+                reg_af.hi = n;
+
+                reg_pc.reg++;
+            }   
+            break;
+        
+
         
         case 0x7E: // LD A, (HL)
             {
@@ -347,12 +392,13 @@ void CPU::execute(uint8_t opcode)
         //temp
         case 0x36: // LD (HL), n
             {
-                reg_pc.reg++;
-                uint8_t n = memory->cartridge[reg_pc.reg];
-
-                memory->cartridge[reg_hl.reg] = n;
-
                 cycles += 12;
+
+                reg_pc.reg++;
+                uint8_t n = memory->read(reg_pc.reg);
+
+                memory->write(reg_hl.reg, n);
+
                 reg_pc.reg++;
                 
             }
@@ -374,35 +420,39 @@ void CPU::execute(uint8_t opcode)
 // ld r, n
 void CPU::ld_nn_n(uint8_t *reg)
 {
+    cycles += 8;
     //read value
     uint8_t value {};
     value = memory->cartridge[reg_pc.reg];
 
     *reg = value;
-    cycles += 8;
+
     reg_pc.reg++;
 }
 //ld r1, r2
 void CPU::ld_rr(uint8_t *reg1, uint8_t *reg2)
 {
-    *reg1 = *reg2;
     cycles +=4 ;
+
+    *reg1 = *reg2;
     reg_pc.reg++;
 }
 //ld r1, (HL)
 void CPU::ld_r_hl(uint8_t *reg)
 {
-    *reg = memory->cartridge[reg_hl.reg];
-
     cycles += 8;
+
+    *reg = memory->read(reg_hl.reg);
+
     reg_pc.reg++;
 }
 //temp
 //ld (HL), r
 void CPU::ld_hl_r(uint8_t *reg)
 {
-    memory->cartridge[reg_hl.reg] =  reg;
-
     cycles += 8;
+
+    memory->write(reg_hl.reg, *reg);
+
     reg_pc.reg++;
 }

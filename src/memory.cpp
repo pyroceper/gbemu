@@ -37,3 +37,13 @@ void Memory::load_ROM(const std::string &path)
     }
 
 }
+
+uint8_t Memory::read(uint16_t address)
+{
+    return cartridge[address];
+}
+
+void Memory::write(uint16_t address, uint8_t value)
+{
+    cartridge[address] = value;
+}
