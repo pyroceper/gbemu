@@ -578,7 +578,7 @@ void CPU::ld_nn_n(uint8_t *reg)
     cycles += 8;
     //read value
     uint8_t value {};
-    value = memory.cartridge[reg_pc.reg];
+    value = memory.rom[reg_pc.reg];
 
     *reg = value;
 

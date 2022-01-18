@@ -23,7 +23,7 @@ int main()
     do {
        step = getchar();
 
-       opcode = cpu.memory.cartridge[cpu.reg_pc.reg];
+       opcode = cpu.memory.rom[cpu.reg_pc.reg];
        
        fmt::print("PC: {0:#x}\n", cpu.reg_pc.reg);
        fmt::print("opcode: {0:#x}\n", opcode);

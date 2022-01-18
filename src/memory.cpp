@@ -12,11 +12,13 @@ void Memory::load_ROM(const std::string &path)
 
         fmt::print("ROM size: {}\n", rom_size);
 
+        rom.resize(0xFFFF);
+
         uint8_t opcode {};
         for(int i = 0;i < rom_size;i++)
         {
             fread(&opcode, sizeof(uint8_t), 1, rom_file);
-            cartridge.push_back(opcode);
+            rom[i] = opcode;
         }
 
 
@@ -33,10 +35,10 @@ void Memory::load_ROM(const std::string &path)
 
 uint8_t Memory::read(uint16_t address)
 {
-    return cartridge[address];
+    return rom[address];
 }
 
 void Memory::write(uint16_t address, uint8_t value)
 {
-    cartridge[address] = value;
+    rom[address] = value;
 }
