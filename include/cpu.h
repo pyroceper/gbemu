@@ -3,6 +3,7 @@
 
 #include <cstdint>
 #include <cstdio>
+#include <string>
 #include <fmt/core.h>
 
 #include "memory.h"
@@ -20,13 +21,14 @@ union Register
 class CPU
 {
     public:
+        CPU(const std::string &path);
         void execute(uint8_t opcode);
         Register reg_pc;
         Register reg_sp;
 
         int cycles {};
 
-        Memory *memory = nullptr;
+        Memory memory;
 
     private:
         Register reg_af;
