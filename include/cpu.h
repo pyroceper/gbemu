@@ -39,11 +39,15 @@ class CPU
         uint8_t reg_flag;// Z N H C
 
         //instructions
-        void ld_nn_n(uint8_t *reg);
-        void ld_rr(uint8_t *reg1, uint8_t *reg2);
+        void ld_nn_n(uint8_t &reg);
+        void ld_rr(uint8_t &reg1, uint8_t &reg2);
 
-        void ld_r_hl(uint8_t *reg);
-        void ld_hl_r(uint8_t *reg);
+        void ld_r_hl(uint8_t &reg);
+        void ld_hl_r(uint8_t &reg);
+
+        //helper
+        uint8_t fetch_byte();
+
 
 };
 
