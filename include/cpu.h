@@ -22,7 +22,7 @@ class CPU
 {
     public:
         CPU(const std::string &path);
-        void execute(uint8_t opcode);
+        void execute();
         Register reg_pc;
         Register reg_sp;
 

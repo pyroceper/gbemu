@@ -6,56 +6,53 @@ CPU::CPU(const std::string &path)
 }
 
 
-void CPU::execute(uint8_t opcode)
+void CPU::execute()
 {
+    //fetch
+    uint8_t opcode = memory.rom[reg_pc.reg];
+       
+    fmt::print("PC: {0:#x}\n", reg_pc.reg);
+    fmt::print("opcode: {0:#x}\n", opcode);
+
+    //increment pc
+    reg_pc.reg++;
+
     switch(opcode) 
     {
         case 0x00: // NOP
         {
             cycles += 4;
-            reg_pc.reg++;
+            // reg_pc.reg++;
         }
         break;
 
         case 0x06: // LD B, n
             {
-                //immediate addressing
-                reg_pc.reg++;
                 ld_nn_n(&reg_bc.hi);
             }
             break;
         case 0x0E: // LD C, n
             {
-                //immediate addressing
-                reg_pc.reg++;
                 ld_nn_n(&reg_bc.lo);
             }
             break;
         case 0x16: // LD D, n
             {
-                //immediate addressing
-                reg_pc.reg++;
                 ld_nn_n(&reg_de.hi);
             }
             break;
         case 0x1E: // LD C, n
             {
-                //immediate addressing
-                reg_pc.reg++;
                 ld_nn_n(&reg_bc.lo);
             }
             break;
         case 0x26: // LD H, n
             {
-                //immediate addressing
-                reg_pc.reg++;
                 ld_nn_n(&reg_hl.hi);
             }
             break;
         case 0x2E: // LD L, n
             {
-                //immediate addressing
-                reg_pc.reg++;
                 ld_nn_n(&reg_hl.lo);
             }
             break;
@@ -289,7 +286,7 @@ void CPU::execute(uint8_t opcode)
                 cycles += 8;
 
                 reg_af.hi = memory.read(reg_bc.reg);
-                reg_pc.reg++;
+                // reg_pc.reg++;
             }
             break;
         case 0x1A: // LD A, (DE)
@@ -297,7 +294,7 @@ void CPU::execute(uint8_t opcode)
                 cycles += 8;
 
                 reg_af.hi = memory.read(reg_de.reg);
-                reg_pc.reg++;
+                // reg_pc.reg++;
             }
             break;
         case 0xFA: // LD A, (nn)
@@ -311,7 +308,7 @@ void CPU::execute(uint8_t opcode)
                 uint16_t nn = (n2 << 8) | n1;
 
                 reg_af.hi = memory.read(nn);
-                reg_pc.reg++;
+                // reg_pc.reg++;
             }
             break;
         case 0x3E: // LD A, n
@@ -323,7 +320,7 @@ void CPU::execute(uint8_t opcode)
 
                 reg_af.hi = n;
 
-                reg_pc.reg++;
+                // reg_pc.reg++;
             }   
             break;
         
@@ -359,7 +356,7 @@ void CPU::execute(uint8_t opcode)
                 cycles += 8;
 
                 memory.write(reg_bc.reg, reg_af.hi);
-                reg_pc.reg++;
+                // reg_pc.reg++;
             }
             break;
         case 0x12: //LD (DE), A
@@ -367,7 +364,7 @@ void CPU::execute(uint8_t opcode)
                 cycles += 8;
 
                 memory.write(reg_de.reg, reg_af.hi);
-                reg_pc.reg++;
+                // reg_pc.reg++;
             }
             break;
         case 0x77: //LD (HL), A
@@ -375,7 +372,7 @@ void CPU::execute(uint8_t opcode)
                 cycles += 8;
 
                 memory.write(reg_hl.reg, reg_af.hi);
-                reg_pc.reg++;
+                // reg_pc.reg++;
             }
             break;
         case 0xEA: //LD (nn), A
@@ -389,7 +386,7 @@ void CPU::execute(uint8_t opcode)
                 uint16_t nn = (n2 << 8) | n1;
 
                 memory.write(nn, reg_af.hi);
-                reg_pc.reg++;                
+                // reg_pc.reg++;                
             }
             break;
 
@@ -470,8 +467,7 @@ void CPU::execute(uint8_t opcode)
 
                 memory.write(reg_hl.reg, n);
 
-                reg_pc.reg++;
-                
+                // reg_pc.reg++;                
             }
             break;
 
@@ -481,7 +477,7 @@ void CPU::execute(uint8_t opcode)
                 cycles += 8;
 
                 reg_af.hi = memory.read(0xFF00 | reg_bc.lo);
-                reg_pc.reg++;
+                // reg_pc.reg++;
             }
             break;
         case 0xE2: // LD (FF00 + C), A
@@ -489,7 +485,7 @@ void CPU::execute(uint8_t opcode)
                 cycles += 8;
 
                 memory.write(0xFF00 | reg_bc.lo, reg_af.hi);
-                reg_pc.reg++;
+                // reg_pc.reg++;
             }
             break;
     
@@ -500,7 +496,7 @@ void CPU::execute(uint8_t opcode)
                 reg_af.hi = memory.read(reg_hl.reg);
                 reg_hl.reg--;
 
-                reg_pc.reg++;
+                // reg_pc.reg++;
             }
             break;
         case 0x32: // LD (HL-), A
@@ -510,7 +506,7 @@ void CPU::execute(uint8_t opcode)
                 memory.write(reg_hl.reg,  reg_af.hi);
                 reg_hl.reg--;
 
-                reg_pc.reg++;
+                // reg_pc.reg++;
             }
             break;
         
@@ -521,7 +517,7 @@ void CPU::execute(uint8_t opcode)
                 reg_af.hi = memory.read(reg_hl.reg);
                 reg_hl.reg++;
 
-                reg_pc.reg++;
+                // reg_pc.reg++;
             }
             break;
         case 0x22: // LD (HL+), A
@@ -531,7 +527,7 @@ void CPU::execute(uint8_t opcode)
                 memory.write(reg_hl.reg, reg_af.hi);
                 reg_hl.reg++;
 
-                reg_pc.reg++;
+                // reg_pc.reg++;
             }
             break;
 
@@ -543,7 +539,7 @@ void CPU::execute(uint8_t opcode)
                 uint8_t n = memory.read(reg_pc.reg);
 
                 memory.write((0xFF00 | n), reg_af.hi);
-                reg_pc.reg++;
+                // reg_pc.reg++;
             }
             break;
         case 0xF0: // LD A, (FF00 + n)
@@ -554,7 +550,7 @@ void CPU::execute(uint8_t opcode)
                 uint8_t n = memory.read(reg_pc.reg);
 
                 reg_af.hi = memory.read((0xFF00 | n));
-                reg_pc.reg++;
+                // reg_pc.reg++;
             }
             break;
 
@@ -562,7 +558,7 @@ void CPU::execute(uint8_t opcode)
         default: 
         {
             fmt::print("OPCODE UNKNOWN\n");
-            reg_pc.reg++;
+            // reg_pc.reg++;
         }
 
     }
@@ -578,19 +574,16 @@ void CPU::ld_nn_n(uint8_t *reg)
     cycles += 8;
     //read value
     uint8_t value {};
+    reg_pc.reg++;
     value = memory.rom[reg_pc.reg];
 
     *reg = value;
-
-    reg_pc.reg++;
 }
 //ld r1, r2
 void CPU::ld_rr(uint8_t *reg1, uint8_t *reg2)
 {
     cycles +=4 ;
-
     *reg1 = *reg2;
-    reg_pc.reg++;
 }
 //ld r1, (HL)
 void CPU::ld_r_hl(uint8_t *reg)
@@ -598,8 +591,6 @@ void CPU::ld_r_hl(uint8_t *reg)
     cycles += 8;
 
     *reg = memory.read(reg_hl.reg);
-
-    reg_pc.reg++;
 }
 //temp
 //ld (HL), r
@@ -608,6 +599,4 @@ void CPU::ld_hl_r(uint8_t *reg)
     cycles += 8;
 
     memory.write(reg_hl.reg, *reg);
-
-    reg_pc.reg++;
 }
