@@ -22,8 +22,6 @@ void CPU::execute()
     fmt::print("PC: {0:#x}\n", reg_pc.reg);
     fmt::print("opcode: {0:#x}\n", opcode);
 
-    //increment pc
-    reg_pc.reg++;
 
     switch(opcode) 
     {
