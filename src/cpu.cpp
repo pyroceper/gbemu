@@ -279,19 +279,19 @@ void CPU::execute()
             break;
 
         //8 bit ALU
-        case 0x87: add_a_n(reg_af.hi); break; // ADD A, A
+        case 0x87: add_byte(reg_af.hi, false); break; // ADD A, A
 
-        case 0x80: add_a_n(reg_bc.hi); break; // ADD A, B
-        case 0x81: add_a_n(reg_bc.lo); break; // ADD A, C
-        case 0x82: add_a_n(reg_de.hi); break; // ADD A, D
-        case 0x83: add_a_n(reg_de.lo); break; // ADD A, E
-        case 0x84: add_a_n(reg_hl.hi); break; // ADD A, H
-        case 0x85: add_a_n(reg_hl.lo); break; // ADD A, L
+        case 0x80: add_byte(reg_bc.hi, false); break; // ADD A, B
+        case 0x81: add_byte(reg_bc.lo, false); break; // ADD A, C
+        case 0x82: add_byte(reg_de.hi, false); break; // ADD A, D
+        case 0x83: add_byte(reg_de.lo, false); break; // ADD A, E
+        case 0x84: add_byte(reg_hl.hi, false); break; // ADD A, H
+        case 0x85: add_byte(reg_hl.lo, false); break; // ADD A, L
         case 0x86: // ADD A, (HL)
             { 
                 increment_cycle(); 
                 uint8_t n = memory.read(reg_hl.reg);
-                add_a_n(n); 
+                add_byte(n, false); 
             } 
             break; 
         case 0xC6: // ADD A, #
@@ -300,10 +300,35 @@ void CPU::execute()
 
                 uint8_t n = fetch_byte();
 
-                add_a_n(n);
+                add_byte(n, false);
             }
             break;
 
+        case 0x8F: add_byte(reg_af.hi, true); break; // ADC A, A
+
+        case 0x88: add_byte(reg_bc.hi, true); break; // ADC A, B
+        case 0x89: add_byte(reg_bc.lo, true); break; // ADC A, C
+        case 0x8A: add_byte(reg_de.hi, true); break; // ADC A, D
+        case 0x8B: add_byte(reg_de.lo, true); break; // ADC A, E
+        case 0x8C: add_byte(reg_hl.hi, true); break; // ADC A, H
+        case 0x8D: add_byte(reg_hl.lo, true); break; // ADC A, L
+
+        case 0x8E: // ADC A, (HL)
+            { 
+                increment_cycle(); 
+                uint8_t n = memory.read(reg_hl.reg);
+                add_byte(n, true); 
+            } 
+            break; 
+        case 0xCE: // ADC A, #
+            {
+                increment_cycle();
+
+                uint8_t n = fetch_byte();
+
+                add_byte(n, true);
+            }
+            break;
 
         default: 
         {
@@ -348,21 +373,21 @@ void CPU::ld_hl_r(uint8_t &reg)
 
 //8 bit ALU
 // 8 bit addition
-void CPU::add_a_n(uint8_t &n)
+void CPU::add_byte(uint8_t &n, bool carry)
 {
     cycles += 4;
 
-    uint16_t result = reg_af.hi + n;
+    uint16_t result = reg_af.hi + n + carry;
     
     flag_n = false;
 
     // set if carry from bit 3
-    flag_h = ( (reg_af.hi & 0b1111) + (n & 0b1111) > 0b1111 );
+    flag_h = ( (reg_af.hi & 0b1111) + (n & 0b1111) + carry > 0b1111 );
 
     // set if carry from bit 7
     flag_c = (result > 0b1111'1111);
 
-    reg_af.hi = (uint8_t)result;
+    reg_af.hi = result;
 
     flag_z = (reg_af.hi == 0);
 }

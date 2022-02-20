@@ -50,7 +50,7 @@ class CPU
         void ld_hl_r(uint8_t &reg);
 
         //8 bit ALU
-        void add_a_n(uint8_t &n);
+        void add_byte(uint8_t &n, bool is_carry);
 
         //helper
         uint8_t fetch_byte();
