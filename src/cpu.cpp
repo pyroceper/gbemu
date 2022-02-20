@@ -362,17 +362,15 @@ void CPU::add_a_n(uint8_t &n)
     if(result == 0)
         flag_z = true;
     
+    flag_n = false;
+
     // set if carry from bit 3
-    if(result > 0b1111)
+    if( (reg_af.hi & 0b1111) + (n & 0b1111) > 0b1111)
         flag_h = true;
-    else 
-        flag_h = false;
 
     // set if carry from bit 7
     if(result > 0b1111'1111)
         flag_c = true;
-    else 
-        flag_c = false;
 
     reg_af.hi = (uint8_t)result;
 }
