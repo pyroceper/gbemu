@@ -3,6 +3,7 @@
 CPU::CPU(const std::string &path)
 {
     memory.load_ROM(path);
+    reset_flags();
 }
 
 uint8_t CPU::fetch_byte() 
@@ -355,22 +356,17 @@ void CPU::add_a_n(uint8_t &n)
 {
     cycles += 4;
 
-    reset_flags();
-
     uint16_t result = reg_af.hi + n;
-
-    if(result == 0)
-        flag_z = true;
     
     flag_n = false;
 
     // set if carry from bit 3
-    if( (reg_af.hi & 0b1111) + (n & 0b1111) > 0b1111)
-        flag_h = true;
+    flag_h = ( (reg_af.hi & 0b1111) + (n & 0b1111) > 0b1111 );
 
     // set if carry from bit 7
-    if(result > 0b1111'1111)
-        flag_c = true;
+    flag_c = (result > 0b1111'1111);
 
-    reg_af.hi = (uint8_t)result;
+    reg_af.hi = result;
+
+    flag_z = (reg_af.hi == 0);
 }
