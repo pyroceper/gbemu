@@ -321,12 +321,8 @@ void CPU::execute()
 void CPU::ld_nn_n(uint8_t &reg)
 {
     cycles += 8;
-    //read value
-    uint8_t value {};
-    reg_pc.reg++;
-    value = memory.read(reg_pc.reg);
 
-    reg = value;
+    reg = fetch_byte();
 }
 //ld r1, r2
 void CPU::ld_rr(uint8_t &reg1, uint8_t &reg2)
@@ -366,7 +362,7 @@ void CPU::add_a_n(uint8_t &n)
     // set if carry from bit 7
     flag_c = (result > 0b1111'1111);
 
-    reg_af.hi = result;
+    reg_af.hi = (uint8_t)result;
 
     flag_z = (reg_af.hi == 0);
 }
