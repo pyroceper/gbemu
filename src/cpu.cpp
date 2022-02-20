@@ -13,6 +13,15 @@ uint8_t CPU::fetch_byte()
     return byte;
 }
 
+void CPU::reset_flags() 
+{
+    flag_z = flag_n = flag_h = flag_c = false;
+}
+
+void CPU::increment_cycle() 
+{
+    cycles += 4;
+}
 
 void CPU::execute()
 {
@@ -268,6 +277,32 @@ void CPU::execute()
             }
             break;
 
+        //8 bit ALU
+        case 0x87: add_a_n(reg_af.hi); break; // ADD A, A
+
+        case 0x80: add_a_n(reg_bc.hi); break; // ADD A, B
+        case 0x81: add_a_n(reg_bc.lo); break; // ADD A, C
+        case 0x82: add_a_n(reg_de.hi); break; // ADD A, D
+        case 0x83: add_a_n(reg_de.lo); break; // ADD A, E
+        case 0x84: add_a_n(reg_hl.hi); break; // ADD A, H
+        case 0x85: add_a_n(reg_hl.lo); break; // ADD A, L
+        case 0x86: // ADD A, (HL)
+            { 
+                increment_cycle(); 
+                uint8_t n = memory.read(reg_hl.reg);
+                add_a_n(n); 
+            } 
+            break; 
+        case 0xC6: // ADD A, #
+            {
+                increment_cycle();
+
+                uint8_t n = fetch_byte();
+
+                add_a_n(n);
+            }
+            break;
+
 
         default: 
         {
@@ -312,4 +347,32 @@ void CPU::ld_hl_r(uint8_t &reg)
     cycles += 8;
 
     memory.write(reg_hl.reg, reg);
+}
+
+//8 bit ALU
+// 8 bit addition
+void CPU::add_a_n(uint8_t &n)
+{
+    cycles += 4;
+
+    reset_flags();
+
+    uint16_t result = reg_af.hi + n;
+
+    if(result == 0)
+        flag_z = true;
+    
+    // set if carry from bit 3
+    if(result > 0b1111)
+        flag_h = true;
+    else 
+        flag_h = false;
+
+    // set if carry from bit 7
+    if(result > 0b1111'1111)
+        flag_c = true;
+    else 
+        flag_c = false;
+
+    reg_af.hi = (uint8_t)result;
 }

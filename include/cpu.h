@@ -36,7 +36,11 @@ class CPU
         Register reg_de;
         Register reg_hl;
         
-        uint8_t reg_flag;// Z N H C
+        //uint8_t reg_flag;// Z N H C
+        bool flag_z; // zero
+        bool flag_n; // subtraction
+        bool flag_h; // half carry
+        bool flag_c; // carry
 
         //instructions
         void ld_nn_n(uint8_t &reg);
@@ -45,8 +49,13 @@ class CPU
         void ld_r_hl(uint8_t &reg);
         void ld_hl_r(uint8_t &reg);
 
+        //8 bit ALU
+        void add_a_n(uint8_t &n);
+
         //helper
         uint8_t fetch_byte();
+        void reset_flags();
+        void increment_cycle();
 
 
 };
