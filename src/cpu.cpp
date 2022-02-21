@@ -170,17 +170,26 @@ void CPU::execute()
         case 0x8E: add_a_hl(true); break; // ADC A, (HL)
         case 0xCE: add_a_n(true); break; // ADC A, #
 
-        case 0x97: sub_rr(reg_af.hi); break; // SUB A, A
+        case 0x97: sub_byte(reg_af.hi, false); break; // SUB A, A
         
-        case 0x90: sub_rr(reg_bc.hi); break; // SUB A, B
-        case 0x91: sub_rr(reg_bc.lo); break; // SUB A, C
-        case 0x92: sub_rr(reg_de.hi); break; // SUB A, D
-        case 0x93: sub_rr(reg_de.lo); break; // SUB A, E
-        case 0x94: sub_rr(reg_hl.hi); break; // SUB A, H
-        case 0x95: sub_rr(reg_hl.lo); break; // SUB A, L
-        case 0x96: sub_r_hl(); break; // SUB A, (HL)
-        case 0xD6: sub_r_n(); break; // SUB A, #
+        case 0x90: sub_byte(reg_bc.hi, false); break; // SUB A, B
+        case 0x91: sub_byte(reg_bc.lo, false); break; // SUB A, C
+        case 0x92: sub_byte(reg_de.hi, false); break; // SUB A, D
+        case 0x93: sub_byte(reg_de.lo, false); break; // SUB A, E
+        case 0x94: sub_byte(reg_hl.hi, false); break; // SUB A, H
+        case 0x95: sub_byte(reg_hl.lo, false); break; // SUB A, L
+        case 0x96: sub_r_hl(false); break; // SUB A, (HL)
+        case 0xD6: sub_r_n(false); break; // SUB A, #
+
+        case 0x9F: sub_byte(reg_af.hi, true); break; // SBC A, A
         
+        case 0x98: sub_byte(reg_bc.hi, true); break; // SBC A, B
+        case 0x99: sub_byte(reg_bc.lo, true); break; // SBC A, C
+        case 0x9A: sub_byte(reg_de.hi, true); break; // SBC A, D
+        case 0x9B: sub_byte(reg_de.lo, true); break; // SBC A, E
+        case 0x9C: sub_byte(reg_hl.hi, true); break; // SBC A, H
+        case 0x9D: sub_byte(reg_hl.lo, true); break; // SBC A, L
+        case 0x9E: sub_r_hl(true); break; // SBC A, (HL)        
      
         default: 
         {
@@ -362,7 +371,7 @@ void CPU::add_a_n(bool carry)
     add_byte(n, carry);
 }
 
-void CPU::sub_rr(uint8_t &n)
+void CPU::sub_byte(uint8_t &n, bool carry)
 {
     increment_cycle();
 
@@ -371,26 +380,26 @@ void CPU::sub_rr(uint8_t &n)
     flag_n = true;
 
     // set if no borrow from bit 4
-    flag_h = ( (reg_af.hi & 0b1111) - (n & 0b1111) < 0);
+    flag_h = ( (reg_af.hi & 0b1111) - ((n & 0b1111) + carry) < 0 );
 
     // set if no borrow
-    flag_c = (reg_af.hi < n);
+    flag_c = (reg_af.hi < n + carry);
 
-    reg_af.hi = reg_af.hi - n;
+    reg_af.hi = reg_af.hi - (n + carry);
 
     flag_z = (reg_af.hi == 0);
 }
 
-void CPU::sub_r_hl()
+void CPU::sub_r_hl(bool carry)
 {
     increment_cycle();
     uint8_t n = memory.read(reg_hl.reg);
-    sub_rr(n);
+    sub_byte(n, carry);
 }
 
-void CPU::sub_r_n()
+void CPU::sub_r_n(bool carry)
 {
     increment_cycle();
     uint8_t n = fetch_byte();
-    sub_rr(n);
+    sub_byte(n, carry);
 }

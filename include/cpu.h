@@ -70,9 +70,9 @@ class CPU
         void add_a_hl(bool carry);
         void add_a_n(bool carry);
 
-        void sub_rr(uint8_t &n);
-        void sub_r_hl();
-        void sub_r_n();
+        void sub_byte(uint8_t &n, bool carry);
+        void sub_r_hl(bool carry);
+        void sub_r_n(bool carry);
 
         //helper
         uint8_t fetch_byte();
