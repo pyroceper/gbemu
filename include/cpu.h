@@ -66,13 +66,21 @@ class CPU
 
 
         //8 bit ALU
-        void add_byte(uint8_t &n, bool carry);
+        void add_byte(uint8_t n, bool carry);
         void add_a_hl(bool carry);
         void add_a_n(bool carry);
 
-        void sub_byte(uint8_t &n, bool carry);
+        void sub_byte(uint8_t n, bool carry);
         void sub_r_hl(bool carry);
         void sub_r_n(bool carry);
+
+        void and_byte(uint8_t &reg);
+        void and_hl();
+        void and_n();
+
+        void or_byte(uint8_t &reg);
+        void or_hl();
+        void or_n();
 
         //helper
         uint8_t fetch_byte();

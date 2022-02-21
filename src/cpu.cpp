@@ -191,6 +191,28 @@ void CPU::execute()
         case 0x9D: sub_byte(reg_hl.lo, true); break; // SBC A, L
         case 0x9E: sub_r_hl(true); break; // SBC A, (HL)        
      
+        case 0xA7: and_byte(reg_af.hi); break; // AND A, A
+
+        case 0xA0: and_byte(reg_bc.hi); break; // AND A, B
+        case 0xA1: and_byte(reg_bc.lo); break; // AND A, C
+        case 0xA2: and_byte(reg_de.hi); break; // AND A, D
+        case 0xA3: and_byte(reg_de.lo); break; // AND A, E
+        case 0xA4: and_byte(reg_hl.hi); break; // AND A, H
+        case 0xA5: and_byte(reg_hl.lo); break; // AND A, L
+        case 0xA6: and_hl(); break; // AND A, (HL)
+        case 0xE6: and_n(); break; // AND A, #
+
+        case 0xB7: or_byte(reg_af.hi); break; // OR A, A
+        
+        case 0xB0: or_byte(reg_bc.hi); break; // OR A, B
+        case 0xB1: or_byte(reg_bc.lo); break; // OR A, C
+        case 0xB2: or_byte(reg_de.hi); break; // OR A, D
+        case 0xB3: or_byte(reg_de.lo); break; // OR A, E
+        case 0xB4: or_byte(reg_hl.hi); break; // OR A, H
+        case 0xB5: or_byte(reg_hl.lo); break; // OR A, L
+        case 0xB6: or_hl(); break; // OR A, (HL)
+        case 0xF6: or_n(); break; // OR A, #
+
         default: 
         {
             fmt::print("OPCODE UNKNOWN\n");
@@ -336,7 +358,7 @@ void CPU::ld_hl_a(bool increment)
 
 //8 bit ALU
 // 8 bit addition
-void CPU::add_byte(uint8_t &n, bool carry)
+void CPU::add_byte(uint8_t n, bool carry)
 {
     increment_cycle();
 
@@ -371,7 +393,7 @@ void CPU::add_a_n(bool carry)
     add_byte(n, carry);
 }
 
-void CPU::sub_byte(uint8_t &n, bool carry)
+void CPU::sub_byte(uint8_t n, bool carry)
 {
     increment_cycle();
 
@@ -402,4 +424,57 @@ void CPU::sub_r_n(bool carry)
     increment_cycle();
     uint8_t n = fetch_byte();
     sub_byte(n, carry);
+}
+
+void CPU::and_byte(uint8_t &reg)
+{
+    increment_cycle();
+    
+    reset_flags();
+
+    reg_af.hi = reg_af.hi & reg;
+
+    flag_z = (reg_af.hi == 0);
+    flag_n = false;
+    flag_h = true;
+    flag_c = false;
+}
+
+void CPU::and_hl()
+{
+    increment_cycle();
+    uint8_t n = memory.read(reg_hl.reg);
+    and_byte(n);
+}
+
+void CPU::and_n()
+{
+    increment_cycle();
+    uint8_t n = fetch_byte();
+    and_byte(n);
+}
+
+void CPU::or_byte(uint8_t &reg)
+{
+    increment_cycle();
+    
+    reset_flags();
+
+    reg_af.hi = reg_af.hi | reg;
+
+    flag_z = (reg_af.hi == 0);
+}
+
+void CPU::or_hl()
+{
+    increment_cycle();
+    uint8_t n = memory.read(reg_hl.reg);
+    or_byte(n);
+}
+
+void CPU::or_n()
+{
+    increment_cycle();
+    uint8_t n = fetch_byte();
+    or_byte(n);
 }
