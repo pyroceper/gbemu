@@ -97,86 +97,24 @@ void CPU::execute()
         case 0x6C: ld_rr(reg_hl.lo, reg_hl.hi); break; // LD L, H
         case 0x6D: ld_rr(reg_hl.lo, reg_hl.lo); break; // LD L, L
 
-        //temp
-        case 0x0A: // LD A, (BC)
-            {
-                cycles += 8;
+        case 0x0A: ld_a_rr(reg_bc.reg); break; // LD A, (BC)
+        case 0x1A: ld_a_rr(reg_de.reg); break; // LD A, (DE)
+ 
+        case 0xFA: ld_a_nn(); break; // LD A, (nn)
 
-                reg_af.hi = memory.read(reg_bc.reg);
-            }
-            break;
-        case 0x1A: // LD A, (DE)
-            {
-                cycles += 8;
-
-                reg_af.hi = memory.read(reg_de.reg);
-            }
-            break;
-        case 0xFA: // LD A, (nn)
-            {
-                cycles += 16;
-
-                uint8_t n1 = fetch_byte();
-                uint8_t n2 = fetch_byte();
-                uint16_t nn = (n2 << 8) | n1;
-
-                reg_af.hi = memory.read(nn);
-            }
-            break;
-        case 0x3E: // LD A, n
-            {
-                cycles += 8;
-
-                uint8_t n = fetch_byte();
-
-                reg_af.hi = n;
-
-            }   
-            break;
+        case 0x3E: ld_a_n(); break; // LD A, n
         
         case 0x4F: ld_rr(reg_bc.lo, reg_af.hi); break; // LD C, A
-  
         case 0x57: ld_rr(reg_de.hi, reg_af.hi); break; // LD D, A
         case 0x5F: ld_rr(reg_de.lo, reg_af.hi); break; // LD E, A
-
         case 0x67: ld_rr(reg_hl.hi, reg_af.hi); break; // LD H, A
         case 0x6F: ld_rr(reg_hl.lo, reg_af.hi); break; // LD L, A
   
-        
-        //temp
-        case 0x02: //LD (BC), A
-            {
-                cycles += 8;
+        case 0x02: ld_rr_a(reg_bc.reg); break; //LD (BC), A
+        case 0x12: ld_rr_a(reg_de.reg); break; //LD (DE), A
+        case 0x77: ld_rr_a(reg_hl.reg); break; //LD (HL), A
 
-                memory.write(reg_bc.reg, reg_af.hi);
-            }
-            break;
-        case 0x12: //LD (DE), A
-            {
-                cycles += 8;
-
-                memory.write(reg_de.reg, reg_af.hi);
-            }
-            break;
-        case 0x77: //LD (HL), A
-            {
-                cycles += 8;
-
-                memory.write(reg_hl.reg, reg_af.hi);
-            }
-            break;
-        case 0xEA: //LD (nn), A
-            { 
-                cycles += 16;
-
-                uint8_t n1 = fetch_byte();
-                uint8_t n2 = fetch_byte();
-                uint16_t nn = (n2 << 8) | n1;
-
-                memory.write(nn, reg_af.hi);
-            }
-            break;
-
+        case 0xEA: ld_nn_a(); break; //LD (nn), A
         
         case 0x7E: ld_r_hl(reg_af.hi); break; // LD A, (HL)
         case 0x46: ld_r_hl(reg_bc.hi); break; // LD B, (HL)
@@ -193,90 +131,21 @@ void CPU::execute()
         case 0x74: ld_hl_r(reg_hl.hi); break; // LD (HL), H
         case 0x75: ld_hl_r(reg_hl.lo); break; // LD (HL), L
 
-        //temp
-        case 0x36: // LD (HL), n
-            {
-                cycles += 12;
+        case 0x36: ld_hl_n(); break; // LD (HL), n
 
-                uint8_t n = fetch_byte();
-
-                memory.write(reg_hl.reg, n);
-
-            }
-            break;
-
-
-        case 0xF2: // LD A, (FF00 + C)
-            {
-                cycles += 8;
-
-                reg_af.hi = memory.read(0xFF00 | reg_bc.lo);
-            }
-            break;
-        case 0xE2: // LD (FF00 + C), A
-            {
-                cycles += 8;
-
-                memory.write(0xFF00 | reg_bc.lo, reg_af.hi);
-            }
-            break;
+        case 0xF2: ld_a_ffc(); break; // LD A, (FF00 + C)
+  
+        case 0xE2: ld_ffc_a(); break; // LD (FF00 + C), A
     
-        case 0x3A: // LD A, (HL-)
-            {
-                cycles += 8;
+        case 0x3A: ld_a_hl(false); break; // LD A, (HL-)
+        case 0x2A: ld_a_hl(true); break; // LD A, (HL+)
 
-                reg_af.hi = memory.read(reg_hl.reg);
-                reg_hl.reg--;
 
-            }
-            break;
-        case 0x32: // LD (HL-), A
-            {
-                cycles += 8;
-                
-                memory.write(reg_hl.reg,  reg_af.hi);
-                reg_hl.reg--;
+        case 0x32: ld_hl_a(false); break; // LD (HL-), A        
+        case 0x22: ld_hl_a(true); break; // LD (HL+), A
 
-            }
-            break;
-        
-        case 0x2A: // LD A, (HL+)
-            {
-                cycles += 8;
-
-                reg_af.hi = memory.read(reg_hl.reg);
-                reg_hl.reg++;
-
-            }
-            break;
-        case 0x22: // LD (HL+), A
-            {
-                cycles += 8;
-
-                memory.write(reg_hl.reg, reg_af.hi);
-                reg_hl.reg++;
-
-            }
-            break;
-
-        case 0xE0: // LD (FF00 + n), A
-            {
-                cycles += 12;
-
-                uint8_t n = fetch_byte();
-
-                memory.write((0xFF00 | n), reg_af.hi);
-            }
-            break;
-        case 0xF0: // LD A, (FF00 + n)
-            {
-                cycles += 12;
-
-                uint8_t n = fetch_byte();
-
-                reg_af.hi = memory.read((0xFF00 | n));
-            }
-            break;
+        case 0xE0: ld_ffn_a(); break; // LD (FF00 + n), A
+        case 0xF0: ld_a_ffn(); break; // LD A, (FF00 + n)
 
         //8 bit ALU
         case 0x87: add_byte(reg_af.hi, false); break; // ADD A, A
@@ -335,7 +204,7 @@ void CPU::ld_nn_n(uint8_t &reg)
 //ld r1, r2
 void CPU::ld_rr(uint8_t &reg1, uint8_t &reg2)
 {
-    cycles +=4 ;
+    cycles += 4;
     reg1 = reg2;
 }
 //ld r1, (HL)
@@ -345,7 +214,48 @@ void CPU::ld_r_hl(uint8_t &reg)
 
     reg = memory.read(reg_hl.reg);
 }
-//temp
+//ld A, (rr)
+void CPU::ld_a_rr(uint16_t &reg)
+{
+    cycles += 8;
+    reg_af.hi = memory.read(reg);
+}
+//ld A, (nn)
+void CPU::ld_a_nn()
+{
+    cycles += 16;
+
+    uint8_t n1 = fetch_byte();
+    uint8_t n2 = fetch_byte();
+    uint16_t nn = (n2 << 8) | n1;
+
+    reg_af.hi = memory.read(nn);
+}
+//ld A, n
+void CPU::ld_a_n()
+{
+    cycles += 8;
+    uint8_t n = fetch_byte();
+    reg_af.hi = n;
+}
+//ld (reg), A
+void CPU::ld_rr_a(uint16_t &reg)
+{               
+    cycles += 8;
+    memory.write(reg, reg_af.hi);
+}
+//ld (nn), A
+void CPU::ld_nn_a()
+{
+    cycles += 16;
+
+    uint8_t n1 = fetch_byte();
+    uint8_t n2 = fetch_byte();
+    uint16_t nn = (n2 << 8) | n1;
+
+    memory.write(nn, reg_af.hi);
+}
+
 //ld (HL), r
 void CPU::ld_hl_r(uint8_t &reg)
 {
@@ -353,6 +263,67 @@ void CPU::ld_hl_r(uint8_t &reg)
 
     memory.write(reg_hl.reg, reg);
 }
+//ld (HL), n
+void CPU::ld_hl_n()
+{
+    cycles += 12;
+
+    uint8_t n = fetch_byte();
+
+    memory.write(reg_hl.reg, n);
+}
+//ld A, (FF00 + C)
+void CPU::ld_a_ffc()
+{
+    cycles += 8;
+
+    reg_af.hi = memory.read(0xFF00 | reg_bc.lo);
+}
+//ld (FF00 + C), A
+void CPU::ld_ffc_a()
+{
+    cycles += 8;
+
+    memory.write(0xFF00 | reg_bc.lo, reg_af.hi);
+}
+//ld A, (FF00 + n)
+void CPU::ld_a_ffn()
+{
+    cycles += 12;
+
+    uint8_t n = fetch_byte();
+
+    reg_af.hi = memory.read((0xFF00 | n));
+}
+//ld (FF00 + n), A
+void CPU::ld_ffn_a()
+{
+    cycles += 12;
+
+    uint8_t n = fetch_byte();
+
+    memory.write((0xFF00 | n), reg_af.hi);
+}
+
+//ld A, (HL +/-)
+void CPU::ld_a_hl(bool increment)
+{
+    cycles += 8;
+
+    reg_af.hi = memory.read(reg_hl.reg);
+    
+    reg_hl.reg = (increment) ? reg_hl.reg++ : reg_hl.reg--;
+}
+//ld (HL +/-), A
+void CPU::ld_hl_a(bool increment)
+{
+    cycles += 8;
+                
+    memory.write(reg_hl.reg,  reg_af.hi);
+
+    reg_hl.reg = (increment) ? reg_hl.reg++ : reg_hl.reg--;
+}
+
 
 //8 bit ALU
 // 8 bit addition
@@ -397,8 +368,6 @@ void CPU::sub_rr(uint8_t &n)
 
     reset_flags();
 
-    uint16_t result = reg_af.hi - n;
-
     flag_n = true;
 
     // set if no borrow from bit 4
@@ -407,7 +376,7 @@ void CPU::sub_rr(uint8_t &n)
     // set if no borrow
     flag_c = (reg_af.hi < n);
 
-    reg_af.hi = result;
+    reg_af.hi = reg_af.hi - n;
 
     flag_z = (reg_af.hi == 0);
 }
