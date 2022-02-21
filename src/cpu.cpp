@@ -224,6 +224,17 @@ void CPU::execute()
         case 0xAE: xor_hl(); break; // XOR A, (HL)
         case 0xEE: xor_n(); break; // XOR A, #
 
+        case 0xBF: cp_byte(reg_af.hi); break; // CP A
+        case 0xB8: cp_byte(reg_bc.hi); break; // CP B
+        case 0xB9: cp_byte(reg_bc.lo); break; // CP C
+        case 0xBA: cp_byte(reg_de.hi); break; // CP D
+        case 0xBB: cp_byte(reg_de.lo); break; // CP E
+        case 0xBC: cp_byte(reg_hl.hi); break; // CP H
+        case 0xBD: cp_byte(reg_hl.lo); break; // CP L
+        case 0xBE: cp_hl(); break; // CP (HL)
+        case 0xFE: cp_n(); break; // CP #
+
+
         default: 
         {
             fmt::print("OPCODE UNKNOWN\n");
@@ -515,3 +526,35 @@ void CPU::xor_n()
     xor_byte(n);
 }
 
+void CPU::cp_byte(uint8_t n)
+{
+    increment_cycle();
+
+    reset_flags();
+
+    uint8_t result = reg_af.hi - n;
+
+    flag_n = true;
+
+    // set if no borrow from bit 4
+    flag_h = ( (reg_af.hi & 0b1111) - (n & 0b1111) < 0 );
+
+    // set if no borrow
+    flag_c = (reg_af.hi < n);
+
+    flag_z = (result == 0);   
+}
+
+void CPU::cp_hl()
+{
+    increment_cycle();
+    uint8_t n = memory.read(reg_hl.reg);
+    cp_byte(n);
+}
+
+void CPU::cp_n()
+{
+    increment_cycle();
+    uint8_t n = fetch_byte();
+    cp_byte(n);
+}

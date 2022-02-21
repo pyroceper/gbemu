@@ -12,14 +12,7 @@ void Memory::load_ROM(const std::string &path)
 
         fmt::print("ROM size: {}\n", rom_size);
 
-        rom.resize(0xFFFF);
-
-        uint8_t opcode {};
-        for(int i = 0;i < rom_size;i++)
-        {
-            fread(&opcode, sizeof(uint8_t), 1, rom_file);
-            rom[i] = opcode;
-        }
+        fread(rom, sizeof(uint8_t), rom_size, rom_file);
 
 
         fmt::print("ROM Loaded!\n");

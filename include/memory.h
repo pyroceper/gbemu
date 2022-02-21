@@ -12,7 +12,7 @@ class Memory
     public:
         void load_ROM(const std::string &path);
 
-        std::vector<uint8_t> rom;
+        uint8_t rom[0x10000] {};
 
         uint8_t read(uint16_t address);
         void write(uint16_t address, uint8_t value);

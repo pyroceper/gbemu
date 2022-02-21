@@ -86,6 +86,10 @@ class CPU
         void xor_hl();
         void xor_n();
 
+        void cp_byte(uint8_t n);
+        void cp_hl();
+        void cp_n();
+
         //helper
         uint8_t fetch_byte();
         void reset_flags();
