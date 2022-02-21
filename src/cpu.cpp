@@ -35,7 +35,7 @@ void CPU::execute()
 
     switch(opcode) 
     {
-        case 0x00: cycles += 4; break; //NOP
+        case 0x00: increment_cycle(); break; //NOP
 
         case 0x06: ld_nn_n(reg_bc.hi); break; // LD B, n
         case 0x0E: ld_nn_n(reg_bc.lo); break; // LD C, n
@@ -300,6 +300,18 @@ void CPU::execute()
         case 0x8D: add_byte(reg_hl.lo, true); break; // ADC A, L
         case 0x8E: add_a_hl(true); break; // ADC A, (HL)
         case 0xCE: add_a_n(true); break; // ADC A, #
+
+        case 0x97: sub_rr(reg_af.hi); break; // SUB A, A
+        
+        case 0x90: sub_rr(reg_bc.hi); break; // SUB A, B
+        case 0x91: sub_rr(reg_bc.lo); break; // SUB A, C
+        case 0x92: sub_rr(reg_de.hi); break; // SUB A, D
+        case 0x93: sub_rr(reg_de.lo); break; // SUB A, E
+        case 0x94: sub_rr(reg_hl.hi); break; // SUB A, H
+        case 0x95: sub_rr(reg_hl.lo); break; // SUB A, L
+        case 0x96: sub_r_hl(); break; // SUB A, (HL)
+        case 0xD6: sub_r_n(); break; // SUB A, #
+        
      
         default: 
         {
@@ -346,7 +358,9 @@ void CPU::ld_hl_r(uint8_t &reg)
 // 8 bit addition
 void CPU::add_byte(uint8_t &n, bool carry)
 {
-    cycles += 4;
+    increment_cycle();
+
+    reset_flags();
 
     uint16_t result = reg_af.hi + n + carry;
     
@@ -375,4 +389,39 @@ void CPU::add_a_n(bool carry)
     increment_cycle();
     uint8_t n = fetch_byte();
     add_byte(n, carry);
+}
+
+void CPU::sub_rr(uint8_t &n)
+{
+    increment_cycle();
+
+    reset_flags();
+
+    uint16_t result = reg_af.hi - n;
+
+    flag_n = true;
+
+    // set if no borrow from bit 4
+    flag_h = ( (reg_af.hi & 0b1111) - (n & 0b1111) < 0);
+
+    // set if no borrow
+    flag_c = (reg_af.hi < n);
+
+    reg_af.hi = result;
+
+    flag_z = (reg_af.hi == 0);
+}
+
+void CPU::sub_r_hl()
+{
+    increment_cycle();
+    uint8_t n = memory.read(reg_hl.reg);
+    sub_rr(n);
+}
+
+void CPU::sub_r_n()
+{
+    increment_cycle();
+    uint8_t n = fetch_byte();
+    sub_rr(n);
 }

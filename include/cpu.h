@@ -54,6 +54,10 @@ class CPU
         void add_a_hl(bool carry);
         void add_a_n(bool carry);
 
+        void sub_rr(uint8_t &n);
+        void sub_r_hl();
+        void sub_r_n();
+
         //helper
         uint8_t fetch_byte();
         void reset_flags();
