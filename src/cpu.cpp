@@ -287,22 +287,8 @@ void CPU::execute()
         case 0x83: add_byte(reg_de.lo, false); break; // ADD A, E
         case 0x84: add_byte(reg_hl.hi, false); break; // ADD A, H
         case 0x85: add_byte(reg_hl.lo, false); break; // ADD A, L
-        case 0x86: // ADD A, (HL)
-            { 
-                increment_cycle(); 
-                uint8_t n = memory.read(reg_hl.reg);
-                add_byte(n, false); 
-            } 
-            break; 
-        case 0xC6: // ADD A, #
-            {
-                increment_cycle();
-
-                uint8_t n = fetch_byte();
-
-                add_byte(n, false);
-            }
-            break;
+        case 0x86: add_a_hl(false); break; // ADD A, (HL)
+        case 0xC6: add_a_n(false); break; // ADD A, #
 
         case 0x8F: add_byte(reg_af.hi, true); break; // ADC A, A
 
@@ -312,24 +298,9 @@ void CPU::execute()
         case 0x8B: add_byte(reg_de.lo, true); break; // ADC A, E
         case 0x8C: add_byte(reg_hl.hi, true); break; // ADC A, H
         case 0x8D: add_byte(reg_hl.lo, true); break; // ADC A, L
-
-        case 0x8E: // ADC A, (HL)
-            { 
-                increment_cycle(); 
-                uint8_t n = memory.read(reg_hl.reg);
-                add_byte(n, true); 
-            } 
-            break; 
-        case 0xCE: // ADC A, #
-            {
-                increment_cycle();
-
-                uint8_t n = fetch_byte();
-
-                add_byte(n, true);
-            }
-            break;
-
+        case 0x8E: add_a_hl(true); break; // ADC A, (HL)
+        case 0xCE: add_a_n(true); break; // ADC A, #
+     
         default: 
         {
             fmt::print("OPCODE UNKNOWN\n");
@@ -390,4 +361,18 @@ void CPU::add_byte(uint8_t &n, bool carry)
     reg_af.hi = result;
 
     flag_z = (reg_af.hi == 0);
+}
+
+void CPU::add_a_hl(bool carry)
+{
+    increment_cycle(); 
+    uint8_t n = memory.read(reg_hl.reg);
+    add_byte(n, carry); 
+}
+
+void CPU::add_a_n(bool carry)
+{
+    increment_cycle();
+    uint8_t n = fetch_byte();
+    add_byte(n, carry);
 }
