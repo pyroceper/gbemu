@@ -213,6 +213,17 @@ void CPU::execute()
         case 0xB6: or_hl(); break; // OR A, (HL)
         case 0xF6: or_n(); break; // OR A, #
 
+        case 0xAF: xor_byte(reg_af.hi); break; // XOR A, A
+        
+        case 0xA8: xor_byte(reg_bc.hi); break; // XOR A, B
+        case 0xA9: xor_byte(reg_bc.lo); break; // XOR A, C
+        case 0xAA: xor_byte(reg_de.hi); break; // XOR A, D
+        case 0xAB: xor_byte(reg_de.lo); break; // XOR A, E
+        case 0xAC: xor_byte(reg_hl.hi); break; // XOR A, H
+        case 0xAD: xor_byte(reg_hl.lo); break; // XOR A, L
+        case 0xAE: xor_hl(); break; // XOR A, (HL)
+        case 0xEE: xor_n(); break; // XOR A, #
+
         default: 
         {
             fmt::print("OPCODE UNKNOWN\n");
@@ -478,3 +489,29 @@ void CPU::or_n()
     uint8_t n = fetch_byte();
     or_byte(n);
 }
+
+void CPU::xor_byte(uint8_t &reg)
+{
+    increment_cycle();
+
+    reset_flags();
+
+    reg_af.hi = reg_af.hi ^ reg;
+
+    flag_z = (reg_af.hi == 0);
+}
+
+void CPU::xor_hl()
+{
+    increment_cycle();
+    uint8_t n = memory.read(reg_hl.reg);
+    xor_byte(n);
+}
+
+void CPU::xor_n()
+{
+    increment_cycle();
+    uint8_t n = fetch_byte();
+    xor_byte(n);
+}
+

@@ -82,6 +82,10 @@ class CPU
         void or_hl();
         void or_n();
 
+        void xor_byte(uint8_t &reg);
+        void xor_hl();
+        void xor_n();
+
         //helper
         uint8_t fetch_byte();
         void reset_flags();
