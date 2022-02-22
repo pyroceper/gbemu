@@ -609,7 +609,7 @@ void CPU::dec_reg(uint8_t &reg)
    
     flag_n = true;
    
-    flag_h = ((reg & 0b1111) == 0b1111); // if last 4 bits are 1s, then there's no halfcarry
+    flag_h = ((reg & 0b1111) == 0b1111); // if last 4 bits are 1s, then there was halfcarry
 }
 
 void CPU::dec_hl()
