@@ -66,6 +66,9 @@ class CPU
 
         //16 bit LD
         void ld_n_nn(uint16_t &reg);
+        void ld_sp_hl();
+        void ld_hl_sp();
+        void ld_nn_sp();
 
 
         //8 bit ALU

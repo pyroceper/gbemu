@@ -153,6 +153,11 @@ void CPU::execute()
         case 0x21: ld_n_nn(reg_hl.reg); break; // LD HL, nn
         case 0x31: ld_n_nn(reg_sp.reg); break; // LD SP, nn
 
+        case 0xF9: ld_sp_hl(); break; // LD SP, HL
+        case 0xF8: ld_hl_sp(); break; // LD HL, SP + n
+
+        case 0x08: ld_nn_sp(); break; // LD (nn), SP
+
         //8 bit ALU
         case 0x87: add_byte(reg_af.hi, false); break; // ADD A, A
 
@@ -411,6 +416,43 @@ void CPU::ld_n_nn(uint16_t &reg)
     uint16_t nn = (hi << 8) | lo;
     
     reg = nn;
+}
+//ld SP, HL
+void CPU::ld_sp_hl()
+{
+    increment_cycle();
+    increment_cycle();
+
+    reg_sp.reg = reg_hl.reg;
+}
+//ld HL,SP + n
+void CPU::ld_hl_sp()
+{
+    cycles += 12;//TODO
+
+    int8_t n = fetch_byte();
+    reg_hl.reg = reg_sp.reg + n;
+
+    flag_z = false;
+    
+    flag_n = false;
+
+    flag_h = ( (reg_sp.reg & 0b1111) + ((uint8_t)n & 0b1111) > 0b1111);
+
+    flag_c = ( (reg_sp.reg & 0b1111'1111) + ((uint8_t)n & 0b1111'1111) > 0b1111'1111);
+}
+//ld (nn), SP
+void CPU::ld_nn_sp()
+{
+    cycles += 20;//TODO
+
+    uint8_t hi = fetch_byte();
+    uint8_t lo = fetch_byte();
+    uint16_t nn = (hi << 8) | lo;
+
+    memory.write(nn, reg_sp.lo);
+    nn++;
+    memory.write(nn, reg_sp.hi);
 }
 
 //8 bit ALU
