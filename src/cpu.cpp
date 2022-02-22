@@ -281,6 +281,16 @@ void CPU::execute()
 
         case 0xE8: add_sp(); break; // ADD SP, n
 
+        case 0x03: inc_nn(reg_bc.reg); break; // INC BC
+        case 0x13: inc_nn(reg_de.reg); break; // INC DE
+        case 0x23: inc_nn(reg_hl.reg); break; // INC HL
+        case 0x33: inc_nn(reg_sp.reg); break; // INC SP
+
+        case 0x0B: dec_nn(reg_bc.reg); break; // DEC BC
+        case 0x1B: dec_nn(reg_de.reg); break; // DEC DE
+        case 0x2B: dec_nn(reg_hl.reg); break; // DEC HL
+        case 0x3B: dec_nn(reg_sp.reg); break; // DEC SP
+
 
         default: 
         {
@@ -756,4 +766,20 @@ void CPU::add_sp()
     flag_h = ( (reg_hl.reg & 0b1111) + ((uint8_t)n & 0b1111) > 0b1111);// set if overflow from bit 3
 
     flag_c = ( (reg_hl.reg & 0b1111'1111) + ((uint8_t)n & 0b1111'1111) > 0b1111'1111); // set if overflow from bit 7
+}
+// INC reg
+void CPU::inc_nn(uint16_t &reg)
+{
+    increment_cycle();
+    increment_cycle();
+
+    reg++;
+}
+// DEC reg
+void CPU::dec_nn(uint16_t &reg)
+{
+    increment_cycle();
+    increment_cycle();
+
+    reg--;
 }

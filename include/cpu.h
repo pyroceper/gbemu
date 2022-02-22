@@ -109,6 +109,9 @@ class CPU
         void add_hl(uint16_t &reg);
         void add_sp();
 
+        void inc_nn(uint16_t &reg);
+        void dec_nn(uint16_t &reg);
+
         //helper
         uint8_t fetch_byte();
         void reset_flags();
