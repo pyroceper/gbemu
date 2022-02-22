@@ -107,6 +107,7 @@ class CPU
 
         //16 bit ALU
         void add_hl(uint16_t &reg);
+        void add_sp();
 
         //helper
         uint8_t fetch_byte();

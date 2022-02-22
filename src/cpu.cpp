@@ -279,6 +279,8 @@ void CPU::execute()
         case 0x29: add_hl(reg_hl.reg); break; // ADD HL, HL
         case 0x39: add_hl(reg_sp.reg); break; // ADD HL, SP
 
+        case 0xE8: add_sp(); break; // ADD SP, n
+
 
         default: 
         {
@@ -737,4 +739,21 @@ void CPU::add_hl(uint16_t &reg)
     flag_h = ( (reg_hl.reg & 0b1111'1111'1111) + (reg & 0b1111'1111'1111) > 0b1111'1111'1111);// set if overflow from bit 11
 
     flag_c = ( (reg_hl.reg & 0b1111'1111'1111'1111) + (reg & 0b1111'1111'1111'1111) > 0b1111'1111'1111'1111); // set if overflow from bit 15
+}
+// ADD SP, n
+void CPU::add_sp()
+{
+    cycles += 16;//TODO
+
+    int8_t n = fetch_byte();
+
+    reg_sp.reg += n;
+
+    flag_z = false;
+
+    flag_n = false;
+
+    flag_h = ( (reg_hl.reg & 0b1111) + ((uint8_t)n & 0b1111) > 0b1111);// set if overflow from bit 3
+
+    flag_c = ( (reg_hl.reg & 0b1111'1111) + ((uint8_t)n & 0b1111'1111) > 0b1111'1111); // set if overflow from bit 7
 }
