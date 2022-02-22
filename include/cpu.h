@@ -64,6 +64,9 @@ class CPU
         void ld_a_hl(bool increment); // LD A, (HL +/-)
         void ld_hl_a(bool increment); // LD (HL +/-), A
 
+        //16 bit LD
+        void ld_n_nn(uint16_t &reg);
+
 
         //8 bit ALU
         void add_byte(uint8_t n, bool carry);

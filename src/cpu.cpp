@@ -147,6 +147,12 @@ void CPU::execute()
         case 0xE0: ld_ffn_a(); break; // LD (FF00 + n), A
         case 0xF0: ld_a_ffn(); break; // LD A, (FF00 + n)
 
+        //16 bit LD
+        case 0x01: ld_n_nn(reg_bc.reg); break; // LD BC, nn
+        case 0x11: ld_n_nn(reg_de.reg); break; // LD DE, nn
+        case 0x21: ld_n_nn(reg_hl.reg); break; // LD HL, nn
+        case 0x31: ld_n_nn(reg_sp.reg); break; // LD SP, nn
+
         //8 bit ALU
         case 0x87: add_byte(reg_af.hi, false); break; // ADD A, A
 
@@ -394,7 +400,18 @@ void CPU::ld_hl_a(bool increment)
 
     reg_hl.reg = (increment) ? reg_hl.reg++ : reg_hl.reg--;
 }
+//16 bit LD
+//ld n, nn
+void CPU::ld_n_nn(uint16_t &reg)
+{
+    cycles += 12;
 
+    uint8_t hi = fetch_byte();
+    uint8_t lo = fetch_byte();
+    uint16_t nn = (hi << 8) | lo;
+    
+    reg = nn;
+}
 
 //8 bit ALU
 // 8 bit addition
