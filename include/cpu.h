@@ -69,6 +69,9 @@ class CPU
         void ld_sp_hl();
         void ld_hl_sp();
         void ld_nn_sp();
+        
+        void sp_push(uint16_t &reg);
+        void sp_pop(uint16_t &reg);
 
 
         //8 bit ALU

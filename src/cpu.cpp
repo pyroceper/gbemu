@@ -158,6 +158,16 @@ void CPU::execute()
 
         case 0x08: ld_nn_sp(); break; // LD (nn), SP
 
+        case 0xF5: sp_push(reg_af.reg); break; // PUSH AF
+        case 0xC5: sp_push(reg_bc.reg); break; // PUSH BC
+        case 0xD5: sp_push(reg_de.reg); break; // PUSH DE
+        case 0xE5: sp_push(reg_hl.reg); break; // PUSH HL
+
+        case 0xF1: sp_pop(reg_af.reg); break; // POP AF
+        case 0xC1: sp_pop(reg_bc.reg); break; // POP BC
+        case 0xD1: sp_pop(reg_de.reg); break; // POP DE
+        case 0xE1: sp_pop(reg_hl.reg); break; // POP HL
+
         //8 bit ALU
         case 0x87: add_byte(reg_af.hi, false); break; // ADD A, A
 
@@ -446,13 +456,40 @@ void CPU::ld_nn_sp()
 {
     cycles += 20;//TODO
 
-    uint8_t hi = fetch_byte();
+    //CHECK
     uint8_t lo = fetch_byte();
+    uint8_t hi = fetch_byte();
     uint16_t nn = (hi << 8) | lo;
 
     memory.write(nn, reg_sp.lo);
     nn++;
     memory.write(nn, reg_sp.hi);
+}
+//push nn
+void CPU::sp_push(uint16_t &reg)
+{
+    cycles += 16;//TODO
+
+    reg_sp.reg--;
+    uint8_t hi = (reg >> 8);
+    memory.write(reg_sp.reg, hi);
+   
+    reg_sp.reg--;
+    uint8_t lo = (reg & 0b1111'1111);
+    memory.write(reg_sp.reg, lo);
+}
+//pop nn
+void CPU::sp_pop(uint16_t &reg)
+{
+    cycles += 12;//TODO
+
+    uint8_t lo = memory.read(reg_sp.reg);
+    reg_sp.reg++;
+
+    uint8_t hi = memory.read(reg_sp.reg);
+    reg_sp.reg++;
+
+    reg = (hi << 8) | lo;
 }
 
 //8 bit ALU
