@@ -243,6 +243,16 @@ void CPU::execute()
         case 0x2C: inc_reg(reg_hl.lo); break; // INC L
         case 0x34: inc_hl(); break; // INC (HL)
 
+        case 0x3D: dec_reg(reg_af.hi); break; // DEC A
+        case 0x05: dec_reg(reg_bc.hi); break; // DEC B
+        case 0x0D: dec_reg(reg_bc.lo); break; // DEC C
+        case 0x15: dec_reg(reg_de.hi); break; // DEC D
+        case 0x1D: dec_reg(reg_de.lo); break; // DEC E
+        case 0x25: dec_reg(reg_hl.hi); break; // DEC H
+        case 0x2D: dec_reg(reg_hl.lo); break; // DEC L
+        case 0x35: dec_hl(); break; // DEC (HL)
+
+
         default: 
         {
             fmt::print("OPCODE UNKNOWN\n");
@@ -577,7 +587,7 @@ void CPU::inc_reg(uint8_t &reg)
     
     flag_n = false;
     
-    flag_h = ( (reg & 0b1111) == 0 );
+    flag_h = ( (reg & 0b1111) == 0 ); // if last 4 bits are 0, then there was halfcarry
 }
 
 void CPU::inc_hl()
@@ -586,5 +596,27 @@ void CPU::inc_hl()
     increment_cycle();
     uint8_t n = memory.read(reg_hl.reg);
     inc_reg(n);
+    memory.write(reg_hl.reg, n);
+}
+
+void CPU::dec_reg(uint8_t &reg)
+{
+    increment_cycle();
+
+    reg--;
+
+    flag_z = (reg == 0);
+   
+    flag_n = true;
+   
+    flag_h = ((reg & 0b1111) == 0b1111); // if last 4 bits are 1s, then there's no halfcarry
+}
+
+void CPU::dec_hl()
+{
+    increment_cycle();
+    increment_cycle();
+    uint8_t n = memory.read(reg_hl.reg);
+    dec_reg(n);
     memory.write(reg_hl.reg, n);
 }

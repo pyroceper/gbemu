@@ -93,6 +93,9 @@ class CPU
         void inc_reg(uint8_t &reg);
         void inc_hl();
 
+        void dec_reg(uint8_t &reg);
+        void dec_hl();
+
         //helper
         uint8_t fetch_byte();
         void reset_flags();
