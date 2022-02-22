@@ -29,7 +29,7 @@ void CPU::execute()
     //fetch
     uint8_t opcode = fetch_byte();
        
-    fmt::print("PC: {0:#x}\n", reg_pc.reg);
+    fmt::print("PC: {0:#x}\n", reg_pc.reg - 1);
     fmt::print("opcode: {0:#x}\n", opcode);
 
 
@@ -234,6 +234,14 @@ void CPU::execute()
         case 0xBE: cp_hl(); break; // CP (HL)
         case 0xFE: cp_n(); break; // CP #
 
+        case 0x3C: inc_reg(reg_af.hi); break; // INC A
+        case 0x04: inc_reg(reg_bc.hi); break; // INC B
+        case 0x0C: inc_reg(reg_bc.lo); break; // INC C
+        case 0x14: inc_reg(reg_de.hi); break; // INC D
+        case 0x1C: inc_reg(reg_de.lo); break; // INC E
+        case 0x24: inc_reg(reg_hl.hi); break; // INC H
+        case 0x2C: inc_reg(reg_hl.lo); break; // INC L
+        case 0x34: inc_hl(); break; // INC (HL)
 
         default: 
         {
@@ -557,4 +565,26 @@ void CPU::cp_n()
     increment_cycle();
     uint8_t n = fetch_byte();
     cp_byte(n);
+}
+
+void CPU::inc_reg(uint8_t &reg)
+{
+    increment_cycle();
+
+    reg++;
+
+    flag_z = (reg == 0);
+    
+    flag_n = false;
+    
+    flag_h = ( (reg & 0b1111) == 0 );
+}
+
+void CPU::inc_hl()
+{
+    increment_cycle();
+    increment_cycle();
+    uint8_t n = memory.read(reg_hl.reg);
+    inc_reg(n);
+    memory.write(reg_hl.reg, n);
 }
