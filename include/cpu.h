@@ -105,6 +105,9 @@ class CPU
         void dec_reg(uint8_t &reg);
         void dec_hl();
 
+        //16 bit ALU
+        void add_hl(uint16_t &reg);
+
         //helper
         uint8_t fetch_byte();
         void reset_flags();

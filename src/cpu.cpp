@@ -273,6 +273,12 @@ void CPU::execute()
         case 0x2D: dec_reg(reg_hl.lo); break; // DEC L
         case 0x35: dec_hl(); break; // DEC (HL)
 
+        //16 bit ALU
+        case 0x09: add_hl(reg_bc.reg); break; // ADD HL, BC
+        case 0x19: add_hl(reg_de.reg); break; // ADD HL, DE
+        case 0x29: add_hl(reg_hl.reg); break; // ADD HL, HL
+        case 0x39: add_hl(reg_sp.reg); break; // ADD HL, SP
+
 
         default: 
         {
@@ -715,4 +721,20 @@ void CPU::dec_hl()
     uint8_t n = memory.read(reg_hl.reg);
     dec_reg(n);
     memory.write(reg_hl.reg, n);
+}
+
+//16 bit ALU
+// ADD HL, reg
+void CPU::add_hl(uint16_t &reg)
+{
+    increment_cycle();
+    increment_cycle();
+
+    reg_hl.reg = reg_hl.reg + reg;
+
+    flag_n = false;
+
+    flag_h = ( (reg_hl.reg & 0b1111'1111'1111) + (reg & 0b1111'1111'1111) > 0b1111'1111'1111);// set if overflow from bit 11
+
+    flag_c = ( (reg_hl.reg & 0b1111'1111'1111'1111) + (reg & 0b1111'1111'1111'1111) > 0b1111'1111'1111'1111); // set if overflow from bit 15
 }
