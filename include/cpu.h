@@ -123,6 +123,7 @@ class CPU
         void stop();
         void di();
         void ei();
+        void daa();
 
         //helper
         uint8_t fetch_byte();

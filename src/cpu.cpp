@@ -854,3 +854,26 @@ void CPU::ei()
 
     interrupt_enabled = true;
 }
+// DAA
+// http://z80-heaven.wikidot.com/instructions-set:daa
+void CPU::daa()
+{
+    increment_cycle();
+
+    if(flag_h || ( (reg_af.hi & 0b1111) > 0b1001 ) ) 
+    {
+        reg_af.hi |= 0x06;
+    }
+
+    if(flag_c || ( ((reg_af.hi >> 8) & 0b1111) > 0b1001 ) )
+    {
+        reg_af.hi |= 0x60;
+        flag_c = true;
+    }
+    else 
+        flag_c = false;
+
+    flag_z = (reg_af.hi == 0);
+
+    flag_h = false;
+}
