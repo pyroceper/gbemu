@@ -977,11 +977,11 @@ void CPU::rlc(uint8_t &reg)
     increment_cycle();
     increment_cycle();
 
-    bool msb = reg_af.hi & (1 << 7);
+    bool msb = reg  & (1 << 7);
 
-    reg_af.hi = (reg_af.hi << 1) | ((uint8_t)msb);
+    reg = (reg << 1) | ((uint8_t)msb);
 
-    flag_z = (reg_af.hi == 0);
+    flag_z = (reg == 0);
 
     flag_n = false;
 
