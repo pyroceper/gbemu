@@ -301,6 +301,9 @@ void CPU::execute()
         case 0xFB: ei(); break; // EI
         case 0x27: daa(); break; // DAA
 
+        //rotate and shift
+        case 0x07: rlca(); break; // RLCA
+
         //prefix cb
         case 0xCB: cb_opcodes(); break;
 
@@ -331,6 +334,16 @@ void CPU::cb_opcodes()
         case 0x34: swap(reg_hl.hi); break; // SWAP H
         case 0x35: swap(reg_hl.lo); break; // SWAP L
         case 0x36: swap_hl(); break; // SWAP (HL)
+
+        //rotate and shift
+        case 0x07: rlc(reg_af.hi); break; // RLC A
+        case 0x00: rlc(reg_bc.hi); break; // RLC B
+        case 0x01: rlc(reg_bc.lo); break; // RLC C
+        case 0x02: rlc(reg_de.hi); break; // RLC D
+        case 0x03: rlc(reg_de.lo); break; // RLC E
+        case 0x04: rlc(reg_hl.hi); break; // RLC H
+        case 0x05: rlc(reg_hl.lo); break; // RLC L
+        case 0x06: rlc_hl(); break; // RLC (HL)
 
         default: 
         {
@@ -938,3 +951,52 @@ void CPU::swap_hl()
     swap(n);
     memory.write(reg_hl.reg, n);
 }
+
+//rotates and shifts
+// RLCA
+// http://z80-heaven.wikidot.com/instructions-set:rlc
+void CPU::rlca()
+{
+    increment_cycle();
+
+    bool msb = reg_af.hi & (1 << 7);
+
+    reg_af.hi = (reg_af.hi << 1) | ((uint8_t)msb);
+
+    flag_z = (reg_af.hi == 0);
+
+    flag_n = false;
+
+    flag_h = false;
+
+    flag_c = msb;
+} 
+// RLC
+void CPU::rlc(uint8_t &reg)
+{
+    increment_cycle();
+    increment_cycle();
+
+    bool msb = reg_af.hi & (1 << 7);
+
+    reg_af.hi = (reg_af.hi << 1) | ((uint8_t)msb);
+
+    flag_z = (reg_af.hi == 0);
+
+    flag_n = false;
+
+    flag_h = false;
+
+    flag_c = msb;
+}
+// RLC (HL)
+void CPU::rlc_hl()
+{
+    increment_cycle();
+    increment_cycle();
+
+    uint8_t n = memory.read(reg_hl.reg);
+    rlc(n);
+    memory.write(reg_hl.reg, n);
+}
+

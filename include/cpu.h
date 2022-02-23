@@ -127,6 +127,11 @@ class CPU
         void swap(uint8_t &reg);
         void swap_hl();
 
+        //rotates and shifts
+        void rlc(uint8_t &reg);
+        void rlc_hl();
+        void rlca();
+
         //helper
         uint8_t fetch_byte();
         void reset_flags();
