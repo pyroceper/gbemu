@@ -297,6 +297,8 @@ void CPU::execute()
         case 0x37: scf(); break; // SCF
         case 0x76: halt(); break; // HALT
         case 0x10: stop(); break; // STOP
+        case 0xF3: di(); break; // DI
+        case 0xFB: ei(); break; // EI
 
 
         default: 
@@ -837,4 +839,18 @@ void CPU::stop()
     increment_cycle();
 
     halted = true;
+}
+// DI
+void CPU::di()
+{
+    increment_cycle();
+
+    interrupt_enabled = false;
+}
+// EI
+void CPU::ei()
+{
+    increment_cycle();
+
+    interrupt_enabled = true;
 }

@@ -43,6 +43,7 @@ class CPU
         bool flag_c; // carry
 
         bool halted;
+        bool interrupt_enabled;
 
         //instructions
         void ld_nn_n(uint8_t &reg);
@@ -120,6 +121,8 @@ class CPU
         void scf();
         void halt();
         void stop();
+        void di();
+        void ei();
 
         //helper
         uint8_t fetch_byte();
