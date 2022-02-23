@@ -124,11 +124,15 @@ class CPU
         void di();
         void ei();
         void daa();
+        void swap(uint8_t &reg);
+        void swap_hl();
 
         //helper
         uint8_t fetch_byte();
         void reset_flags();
         void increment_cycle();
+        
+        void cb_opcodes();
 
 
 };

@@ -301,6 +301,8 @@ void CPU::execute()
         case 0xFB: ei(); break; // EI
         case 0x27: daa(); break; // DAA
 
+        //prefix cb
+        case 0xCB: cb_opcodes(); break;
 
         default: 
         {
@@ -309,6 +311,32 @@ void CPU::execute()
 
     }
 
+}
+
+void CPU::cb_opcodes()
+{
+    //fetch
+    uint8_t opcode = fetch_byte();
+       
+    fmt::print("CB opcode: {0:#x}\n", opcode);
+    
+    switch(opcode)
+    {
+        //SWAP
+        case 0x37: swap(reg_af.hi); break; // SWAP A
+        case 0x30: swap(reg_bc.hi); break; // SWAP B
+        case 0x31: swap(reg_bc.lo); break; // SWAP C
+        case 0x32: swap(reg_de.hi); break; // SWAP D
+        case 0x33: swap(reg_de.lo); break; // SWAP E
+        case 0x34: swap(reg_hl.hi); break; // SWAP H
+        case 0x35: swap(reg_hl.lo); break; // SWAP L
+        case 0x36: swap_hl(); break; // SWAP (HL)
+
+        default: 
+        {
+            fmt::print("CB OPCODE UNKNOWN\n");
+        }
+    }
 }
 
 //instructions
@@ -869,7 +897,7 @@ void CPU::daa()
         correction |= 0x06;
     }
 
-    if(flag_c || (!flag_n && ((reg_af.hi >> 8) & 0b1111) > 0b1001 ) )
+    if(flag_c || (!flag_n && ((reg_af.hi >> 4) & 0b1111) > 0b1001 ) )
     {
         correction |= 0x60;
         flag_c = true;
@@ -880,4 +908,33 @@ void CPU::daa()
     flag_z = (reg_af.hi == 0);
 
     flag_h = false;
+}
+// SWAP
+void CPU::swap(uint8_t &reg)
+{
+    increment_cycle();
+    increment_cycle();
+
+    //get hi nibble
+    uint8_t temp = (reg >> 4);
+    //move lo nibble to hi and add temp
+    reg = (reg << 4) | temp;
+
+    flag_z = (reg == 0);
+
+    flag_n = false;
+
+    flag_h = false;
+
+    flag_c = false;
+}
+// SWAP (HL)
+void CPU::swap_hl()
+{
+    increment_cycle();
+    increment_cycle();
+
+    uint8_t n = memory.read(reg_hl.reg);
+    swap(n);
+    memory.write(reg_hl.reg, n);
 }
