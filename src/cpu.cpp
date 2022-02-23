@@ -857,22 +857,25 @@ void CPU::ei()
 }
 // DAA
 // http://z80-heaven.wikidot.com/instructions-set:daa
+// https://ehaskins.com/2018-01-30%20Z80%20DAA/
 void CPU::daa()
 {
     increment_cycle();
 
-    if(flag_h || ( (reg_af.hi & 0b1111) > 0b1001 ) ) 
+    uint8_t correction {};
+
+    if(flag_h || (!flag_n && (reg_af.hi & 0b1111) > 0b1001 ) ) 
     {
-        reg_af.hi |= 0x06;
+        correction |= 0x06;
     }
 
-    if(flag_c || ( ((reg_af.hi >> 8) & 0b1111) > 0b1001 ) )
+    if(flag_c || (!flag_n && ((reg_af.hi >> 8) & 0b1111) > 0b1001 ) )
     {
-        reg_af.hi |= 0x60;
+        correction |= 0x60;
         flag_c = true;
     }
-    else 
-        flag_c = false;
+
+    reg_af.hi += flag_n ? -correction : correction;
 
     flag_z = (reg_af.hi == 0);
 
