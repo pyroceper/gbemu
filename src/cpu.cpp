@@ -294,6 +294,9 @@ void CPU::execute()
         //misc
         case 0x2F: cpl(); break; // CPL
         case 0x3F: ccf(); break; // CCF
+        case 0x37: scf(); break; // SCF
+        case 0x76: halt(); break; // HALT
+        case 0x10: stop(); break; // STOP
 
 
         default: 
@@ -809,4 +812,29 @@ void CPU::ccf()
     flag_h = false;
 
     flag_c = !flag_c;
+}
+// SCF
+void CPU::scf()
+{
+    increment_cycle();
+
+    flag_n = false;
+
+    flag_h = false;
+
+    flag_c = true;
+}
+// HALT
+void CPU::halt()
+{
+    increment_cycle();
+
+    halted = true;
+}
+// STOP
+void CPU::stop()
+{
+    increment_cycle();
+
+    halted = true;
 }

@@ -42,6 +42,8 @@ class CPU
         bool flag_h; // half carry
         bool flag_c; // carry
 
+        bool halted;
+
         //instructions
         void ld_nn_n(uint8_t &reg);
         void ld_rr(uint8_t &reg1, uint8_t &reg2);
@@ -115,6 +117,9 @@ class CPU
         //misc
         void cpl();
         void ccf();
+        void scf();
+        void halt();
+        void stop();
 
         //helper
         uint8_t fetch_byte();
