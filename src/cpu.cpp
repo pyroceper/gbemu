@@ -299,6 +299,7 @@ void CPU::execute()
         case 0x10: stop(); break; // STOP
         case 0xF3: di(); break; // DI
         case 0xFB: ei(); break; // EI
+        case 0x27: daa(); break; // DAA
 
 
         default: 
