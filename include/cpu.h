@@ -112,6 +112,10 @@ class CPU
         void inc_nn(uint16_t &reg);
         void dec_nn(uint16_t &reg);
 
+        //misc
+        void cpl();
+        void ccf();
+
         //helper
         uint8_t fetch_byte();
         void reset_flags();

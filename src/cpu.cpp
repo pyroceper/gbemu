@@ -291,6 +291,10 @@ void CPU::execute()
         case 0x2B: dec_nn(reg_hl.reg); break; // DEC HL
         case 0x3B: dec_nn(reg_sp.reg); break; // DEC SP
 
+        //misc
+        case 0x2F: cpl(); break; // CPL
+        case 0x3F: ccf(); break; // CCF
+
 
         default: 
         {
@@ -782,4 +786,27 @@ void CPU::dec_nn(uint16_t &reg)
     increment_cycle();
 
     reg--;
+}
+
+//misc
+// CPL
+void CPU::cpl()
+{
+    increment_cycle();
+    reg_af.hi = ~reg_af.hi;
+   
+    flag_n = true;
+   
+    flag_h = true;
+}
+// CCF
+void CPU::ccf()
+{
+    increment_cycle();
+
+    flag_n = false;
+
+    flag_h = false;
+
+    flag_c = !flag_c;
 }
