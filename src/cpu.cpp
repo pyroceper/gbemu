@@ -305,6 +305,7 @@ void CPU::execute()
         case 0x07: rlca(); break; // RLCA
         case 0x17: rla(); break; // RLA
         case 0x1F: rra(); break; // RRA
+        case 0x0F: rrca(); break; // RRCA
 
         //prefix cb
         case 0xCB: cb_opcodes(); break;
@@ -346,6 +347,15 @@ void CPU::cb_opcodes()
         case 0x04: rlc(reg_hl.hi); break; // RLC H
         case 0x05: rlc(reg_hl.lo); break; // RLC L
         case 0x06: rlc_hl(); break; // RLC (HL)
+
+        case 0x17: rl(reg_af.hi); break; // RL A
+        case 0x10: rl(reg_bc.hi); break; // RL B
+        case 0x11: rl(reg_bc.lo); break; // RL C
+        case 0x12: rl(reg_de.hi); break; // RL D
+        case 0x13: rl(reg_de.lo); break; // RL E
+        case 0x14: rl(reg_hl.hi); break; // RL H
+        case 0x15: rl(reg_hl.lo); break; // RL L
+        case 0x16: rl_hl(); break; // RL (HL)
 
         default: 
         {
@@ -1018,6 +1028,33 @@ void CPU::rla()
 
     flag_c = msb;
 }
+// RL reg
+void CPU::rl(uint8_t &reg)
+{
+    increment_cycle();
+    increment_cycle();
+
+    bool msb = reg & (1 << 7);
+    bool carry = flag_c;
+    reg = (reg << 1) | ((uint8_t) carry);
+
+    flag_z = (reg == 0);
+
+    flag_n = false;
+
+    flag_h = false;
+
+    flag_c = msb;
+}
+// RL (HL)
+void CPU::rl_hl()
+{
+    increment_cycle();
+    increment_cycle();
+    uint8_t n = memory.read(reg_hl.reg);
+    rl(n);
+    memory.write(reg_hl.reg, n);
+}
 // RRA
 void CPU::rra()
 {
@@ -1027,6 +1064,22 @@ void CPU::rra()
     uint8_t lsb = reg_af.hi & 0x1;
     reg_af.hi = reg_af.hi | carry;
     reg_af.hi = (reg_af.hi >> 1);
+
+    flag_z = false;
+
+    flag_n = false;
+
+    flag_h = false;
+
+    flag_c = lsb;
+}
+// RRCA
+void CPU::rrca()
+{
+    increment_cycle();
+
+    bool lsb = reg_af.hi & 0x1;
+    reg_af.hi = (reg_af.hi >> 1) | ((uint8_t)lsb << 7);
 
     flag_z = false;
 

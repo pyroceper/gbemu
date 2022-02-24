@@ -134,6 +134,9 @@ class CPU
 
         void rla();
         void rra();
+        void rrca();
+        void rl(uint8_t &reg);
+        void rl_hl();
 
         //helper
         uint8_t fetch_byte();
