@@ -1105,7 +1105,7 @@ void CPU::rra()
 {
     increment_cycle();
 
-    uint8_t carry = (uint8_t)flag_c & (1 << 7);
+    uint8_t carry = flag_c << 7;
     uint8_t lsb = reg_af.hi & 0x1;
     reg_af.hi = reg_af.hi | carry;
     reg_af.hi = (reg_af.hi >> 1);
@@ -1166,7 +1166,7 @@ void CPU::rr(uint8_t &reg)
     increment_cycle();
     increment_cycle();
 
-    uint8_t carry = (uint8_t)flag_c & (1 << 7);
+    uint8_t carry = flag_c << 7;
     uint8_t lsb = reg & 0x1;
     reg = reg | carry;
     reg = (reg >> 1);
