@@ -142,6 +142,10 @@ class CPU
         void rr(uint8_t &reg);
         void rr_hl();
 
+        void sla(uint8_t &reg);
+        void sla_hl();
+        void sra(uint8_t &reg);
+        void sra_hl();
 
         //helper
         uint8_t fetch_byte();
@@ -149,8 +153,6 @@ class CPU
         void increment_cycle();
         
         void cb_opcodes();
-
-
 };
 
 

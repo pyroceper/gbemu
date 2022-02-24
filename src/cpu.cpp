@@ -375,6 +375,24 @@ void CPU::cb_opcodes()
         case 0x1D: rr(reg_hl.lo); break; // RR L
         case 0x1E: rr_hl(); break; // RR (HL)
 
+        case 0x27: sla(reg_af.hi); break; // SLA A
+        case 0x20: sla(reg_bc.hi); break; // SLA B
+        case 0x21: sla(reg_bc.lo); break; // SLA C
+        case 0x22: sla(reg_de.hi); break; // SLA D
+        case 0x23: sla(reg_de.lo); break; // SLA E
+        case 0x24: sla(reg_hl.hi); break; // SLA H
+        case 0x25: sla(reg_hl.lo); break; // SLA L
+        case 0x26: sla_hl(); break; // SLA (HL)
+
+        case 0x2F: sra(reg_af.hi); break; // SRA A
+        case 0x28: sra(reg_bc.hi); break; // SRA B
+        case 0x29: sra(reg_bc.lo); break; // SRA C
+        case 0x2A: sra(reg_de.hi); break; // SRA D
+        case 0x2B: sra(reg_de.lo); break; // SRA E
+        case 0x2C: sra(reg_hl.hi); break; // SRA H
+        case 0x2D: sra(reg_hl.lo); break; // SRA L
+        case 0x2E: sra_hl(); break; // SRA (HL)
+
         default: 
         {
             fmt::print("CB OPCODE UNKNOWN\n");
@@ -1159,5 +1177,58 @@ void CPU::rr_hl()
     increment_cycle();
     uint8_t n = memory.read(reg_hl.reg);
     rr(n);
+    memory.write(reg_hl.reg, n);
+}
+// SLA reg
+void CPU::sla(uint8_t &reg)
+{
+    increment_cycle();
+    increment_cycle();
+
+    bool msb = reg & (1 << 7);
+    reg = reg << 1;
+
+    flag_z = (reg == 0);
+
+    flag_n = false;
+
+    flag_h = false;
+
+    flag_c = msb;
+}
+// SLA [HL]
+void CPU::sla_hl()
+{
+    increment_cycle();
+    increment_cycle();
+    uint8_t n = memory.read(reg_hl.reg);
+    sla(n);
+    memory.write(reg_hl.reg, n);
+}
+// SRA reg
+void CPU::sra(uint8_t &reg)
+{
+    increment_cycle();
+    increment_cycle();
+
+    bool lsb = reg & 0x1;
+    bool msb = reg & (1 << 7);
+    reg = (reg >> 1) | ((uint8_t)msb);
+
+    flag_z = (reg == 0);
+
+    flag_n = false;
+
+    flag_h = false;
+
+    flag_c = lsb;
+}
+// SRA [HL]
+void CPU::sra_hl()
+{
+    increment_cycle();
+    increment_cycle();
+    uint8_t n = memory.read(reg_hl.reg);
+    sra(n);
     memory.write(reg_hl.reg, n);
 }
