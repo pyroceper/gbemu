@@ -132,6 +132,9 @@ class CPU
         void rlc_hl();
         void rlca();
 
+        void rla();
+        void rra();
+
         //helper
         uint8_t fetch_byte();
         void reset_flags();

@@ -303,6 +303,8 @@ void CPU::execute()
 
         //rotate and shift
         case 0x07: rlca(); break; // RLCA
+        case 0x17: rla(); break; // RLA
+        case 0x1F: rra(); break; // RRA
 
         //prefix cb
         case 0xCB: cb_opcodes(); break;
@@ -998,5 +1000,40 @@ void CPU::rlc_hl()
     uint8_t n = memory.read(reg_hl.reg);
     rlc(n);
     memory.write(reg_hl.reg, n);
+}
+// RLA
+void CPU::rla()
+{
+    increment_cycle();
+
+    bool msb = reg_af.hi & (1 << 7);
+    bool carry = flag_c;
+    reg_af.hi = (reg_af.hi << 1) | ((uint8_t)carry);
+
+    flag_z = false;
+
+    flag_n = false;
+
+    flag_h = false;
+
+    flag_c = msb;
+}
+// RRA
+void CPU::rra()
+{
+    increment_cycle();
+
+    uint8_t carry = (uint8_t)flag_c & (1 << 7);
+    uint8_t lsb = reg_af.hi & 0x1;
+    reg_af.hi = reg_af.hi | carry;
+    reg_af.hi = (reg_af.hi >> 1);
+
+    flag_z = false;
+
+    flag_n = false;
+
+    flag_h = false;
+
+    flag_c = lsb;
 }
 
