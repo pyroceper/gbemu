@@ -954,7 +954,6 @@ void CPU::swap_hl()
 
 //rotates and shifts
 // RLCA
-// http://z80-heaven.wikidot.com/instructions-set:rlc
 void CPU::rlca()
 {
     increment_cycle();
@@ -963,7 +962,7 @@ void CPU::rlca()
 
     reg_af.hi = (reg_af.hi << 1) | ((uint8_t)msb);
 
-    flag_z = (reg_af.hi == 0);
+    flag_z = false;
 
     flag_n = false;
 
@@ -972,6 +971,7 @@ void CPU::rlca()
     flag_c = msb;
 } 
 // RLC
+// http://z80-heaven.wikidot.com/instructions-set:rlc
 void CPU::rlc(uint8_t &reg)
 {
     increment_cycle();
