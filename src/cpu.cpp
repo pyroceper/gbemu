@@ -357,6 +357,24 @@ void CPU::cb_opcodes()
         case 0x15: rl(reg_hl.lo); break; // RL L
         case 0x16: rl_hl(); break; // RL (HL)
 
+        case 0x0F: rrc(reg_af.hi); break; // RRC A
+        case 0x08: rrc(reg_bc.hi); break; // RRC B
+        case 0x09: rrc(reg_bc.lo); break; // RRC C
+        case 0x0A: rrc(reg_de.hi); break; // RRC D
+        case 0x0B: rrc(reg_de.lo); break; // RRC E
+        case 0x0C: rrc(reg_hl.hi); break; // RRC H
+        case 0x0D: rrc(reg_hl.lo); break; // RRC L
+        case 0x0E: rrc_hl(); break; // RRC (HL)
+
+        case 0x1F: rr(reg_af.hi); break; // RR A
+        case 0x18: rr(reg_bc.hi); break; // RR B
+        case 0x19: rr(reg_bc.lo); break; // RR C
+        case 0x1A: rr(reg_de.hi); break; // RR D
+        case 0x1B: rr(reg_de.lo); break; // RR E
+        case 0x1C: rr(reg_hl.hi); break; // RR H
+        case 0x1D: rr(reg_hl.lo); break; // RR L
+        case 0x1E: rr_hl(); break; // RR (HL)
+
         default: 
         {
             fmt::print("CB OPCODE UNKNOWN\n");
@@ -1089,4 +1107,57 @@ void CPU::rrca()
 
     flag_c = lsb;
 }
+// RRC reg
+void CPU::rrc(uint8_t &reg)
+{
+    increment_cycle();
+    increment_cycle();
 
+    bool lsb = reg & 0x1;
+    reg = (reg >> 1) | ((uint8_t)lsb << 7);
+
+    flag_z = (reg == 0);
+
+    flag_n = false;
+
+    flag_h = false;
+
+    flag_c = lsb;
+}
+// RRC (HL)
+void CPU::rrc_hl()
+{
+    increment_cycle();
+    increment_cycle();
+    uint8_t n = memory.read(reg_hl.reg);
+    rrc(n);
+    memory.write(reg_hl.reg, n);
+}
+// RR reg
+void CPU::rr(uint8_t &reg)
+{
+    increment_cycle();
+    increment_cycle();
+
+    uint8_t carry = (uint8_t)flag_c & (1 << 7);
+    uint8_t lsb = reg & 0x1;
+    reg = reg | carry;
+    reg = (reg >> 1);
+
+    flag_z = (reg == 0);
+
+    flag_n = false;
+
+    flag_h = false;
+
+    flag_c = lsb;
+}
+// RR (HL)
+void CPU::rr_hl()
+{
+    increment_cycle();
+    increment_cycle();
+    uint8_t n = memory.read(reg_hl.reg);
+    rr(n);
+    memory.write(reg_hl.reg, n);
+}

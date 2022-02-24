@@ -131,12 +131,17 @@ class CPU
         void rlc(uint8_t &reg);
         void rlc_hl();
         void rlca();
-
         void rla();
-        void rra();
-        void rrca();
         void rl(uint8_t &reg);
         void rl_hl();
+        
+        void rra();
+        void rrca();
+        void rrc(uint8_t &reg);
+        void rrc_hl();
+        void rr(uint8_t &reg);
+        void rr_hl();
+
 
         //helper
         uint8_t fetch_byte();
