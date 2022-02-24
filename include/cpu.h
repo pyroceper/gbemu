@@ -146,6 +146,8 @@ class CPU
         void sla_hl();
         void sra(uint8_t &reg);
         void sra_hl();
+        void srl(uint8_t &reg);
+        void srl_hl();
 
         //helper
         uint8_t fetch_byte();

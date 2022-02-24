@@ -393,6 +393,15 @@ void CPU::cb_opcodes()
         case 0x2D: sra(reg_hl.lo); break; // SRA L
         case 0x2E: sra_hl(); break; // SRA (HL)
 
+        case 0x3F: srl(reg_af.hi); break; // SRL A
+        case 0x38: srl(reg_bc.hi); break; // SRL B
+        case 0x39: srl(reg_bc.lo); break; // SRL C
+        case 0x3A: srl(reg_de.hi); break; // SRL D
+        case 0x3B: srl(reg_de.lo); break; // SRL E
+        case 0x3C: srl(reg_hl.hi); break; // SRL H
+        case 0x3D: srl(reg_hl.lo); break; // SRL L
+        case 0x3E: srl_hl(); break; // SRL (HL)       
+
         default: 
         {
             fmt::print("CB OPCODE UNKNOWN\n");
@@ -1230,5 +1239,32 @@ void CPU::sra_hl()
     increment_cycle();
     uint8_t n = memory.read(reg_hl.reg);
     sra(n);
+    memory.write(reg_hl.reg, n);
+}
+// SRL reg
+// http://jgmalcolm.com/z80/advanced/shif#sla
+void CPU::srl(uint8_t &reg)
+{
+    increment_cycle();
+    increment_cycle();
+
+    bool lsb = reg & 0x1;
+    reg = reg >> 1;
+
+    flag_z = (reg == 0);
+
+    flag_n = false;
+
+    flag_h = false;
+
+    flag_c = lsb;
+}
+// SRL [HL]
+void CPU::srl_hl()
+{
+    increment_cycle();
+    increment_cycle();
+    uint8_t n = memory.read(reg_hl.reg);
+    srl(n);
     memory.write(reg_hl.reg, n);
 }
