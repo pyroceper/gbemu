@@ -152,6 +152,8 @@ class CPU
         //bit operations
         void bit(uint8_t &reg);
         void bit_hl();
+        void set(uint8_t &reg);
+        void set_hl();
 
         //helper
         uint8_t fetch_byte();

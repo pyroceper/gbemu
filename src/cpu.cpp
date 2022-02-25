@@ -411,6 +411,16 @@ void CPU::cb_opcodes()
         case 0x45: bit(reg_hl.lo); break; // BIT b, L
         case 0x46: bit_hl(); break; // BIT b, (HL)
 
+        case 0xC7: set(reg_af.hi); break; // SET b, A
+        case 0xC0: set(reg_bc.hi); break; // SET b, B
+        case 0xC1: set(reg_bc.lo); break; // SET b, C
+        case 0xC2: set(reg_de.hi); break; // SET b, D
+        case 0xC3: set(reg_de.lo); break; // SET b, E
+        case 0xC4: set(reg_hl.hi); break; // SET b, H
+        case 0xC5: set(reg_hl.lo); break; // SET b, L
+        case 0xC6: set_hl(); break; // SET b, (HL)
+
+
         default: 
         {
             fmt::print("CB OPCODE UNKNOWN\n");
@@ -1300,5 +1310,24 @@ void CPU::bit_hl()
 
     uint8_t n = memory.read(reg_hl.reg);
     bit(n);
+    memory.write(reg_hl.reg, n);
+}
+// SET n, reg
+void CPU::set(uint8_t &reg)
+{
+    increment_cycle();
+    increment_cycle();
+
+    uint8_t n = fetch_byte();
+    reg = reg | (1 << n);
+}
+// SET n, (HL)
+void CPU::set_hl()
+{
+    increment_cycle();
+    increment_cycle();
+
+    uint8_t n = memory.read(reg_hl.reg);
+    set(n);
     memory.write(reg_hl.reg, n);
 }
