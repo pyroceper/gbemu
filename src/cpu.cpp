@@ -314,6 +314,7 @@ void CPU::execute()
         case 0xD2: jp_nc_nn(); break; // JP NC, nn
         case 0xDA: jp_c_nn(); break; // JP C, nn
         case 0xE9: jp_hl(); break; // JP HL
+        case 0x18: jr(); break; // JR n
         
         //prefix cb
         case 0xCB: cb_opcodes(); break;
@@ -1436,4 +1437,56 @@ void CPU::jp_hl()
     increment_cycle();
 
     reg_pc.reg = reg_hl.reg;
+}
+//helper
+void CPU::jr_jump()
+{
+    increment_cycle();
+
+    uint8_t n = fetch_byte();
+    reg_pc.reg += n; 
+}
+// JR n
+void CPU::jr()
+{
+    increment_cycle();
+    increment_cycle();
+
+    jr_jump();
+}
+// JR NZ
+void CPU::jr_nz()
+{
+    increment_cycle();
+    increment_cycle();
+
+    if(!flag_z)
+        jr_jump();
+}
+// JR Z
+void CPU::jr_z()
+{
+    increment_cycle();
+    increment_cycle();
+
+    if(flag_z)
+        jr_jump();
+}
+// JR NC
+void CPU::jr_nc()
+{
+    increment_cycle();
+    increment_cycle();
+
+    if(!flag_c)
+        jr_jump();
+}
+// JR C
+void CPU::jr_c()
+{
+    increment_cycle();
+    increment_cycle();
+
+    if(flag_c)
+        jr_jump();
 }

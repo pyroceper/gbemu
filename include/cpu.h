@@ -164,12 +164,18 @@ class CPU
         void jp_nc_nn();
         void jp_c_nn();
         void jp_hl();
+        void jr();
+        void jr_nz();
+        void jr_z();
+        void jr_nc();
+        void jr_c();
 
         //helper
         uint8_t fetch_byte();
         void reset_flags();
         void increment_cycle();
         void jump();
+        void jr_jump();
         
         void cb_opcodes();
 };
