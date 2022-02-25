@@ -309,12 +309,12 @@ void CPU::execute()
 
         //jumps
         case 0xC3: jp_nn(); break; // JP nn
-
         case 0xC2: jp_nz_nn(); break; // JP NZ, nn
         case 0xCA: jp_z_nn(); break; // JP Z, nn
         case 0xD2: jp_nc_nn(); break; // JP NC, nn
         case 0xDA: jp_c_nn(); break; // JP C, nn
-
+        case 0xE9: jp_hl(); break; // JP HL
+        
         //prefix cb
         case 0xCB: cb_opcodes(); break;
 
@@ -1429,4 +1429,11 @@ void CPU::jp_c_nn()
 
     if(flag_c)
         jump();    
+}
+// JP HL
+void CPU::jp_hl()
+{
+    increment_cycle();
+
+    reg_pc.reg = reg_hl.reg;
 }

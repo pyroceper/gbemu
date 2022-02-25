@@ -163,6 +163,7 @@ class CPU
         void jp_z_nn();
         void jp_nc_nn();
         void jp_c_nn();
+        void jp_hl();
 
         //helper
         uint8_t fetch_byte();
