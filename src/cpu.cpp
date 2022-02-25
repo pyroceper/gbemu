@@ -400,7 +400,16 @@ void CPU::cb_opcodes()
         case 0x3B: srl(reg_de.lo); break; // SRL E
         case 0x3C: srl(reg_hl.hi); break; // SRL H
         case 0x3D: srl(reg_hl.lo); break; // SRL L
-        case 0x3E: srl_hl(); break; // SRL (HL)       
+        case 0x3E: srl_hl(); break; // SRL (HL)    
+
+        case 0x47: bit(reg_af.hi); break; // BIT b, A
+        case 0x40: bit(reg_bc.hi); break; // BIT b, B
+        case 0x41: bit(reg_bc.lo); break; // BIT b, C
+        case 0x42: bit(reg_de.hi); break; // BIT b, D
+        case 0x43: bit(reg_de.lo); break; // BIT b, E
+        case 0x44: bit(reg_hl.hi); break; // BIT b, H
+        case 0x45: bit(reg_hl.lo); break; // BIT b, L
+        case 0x46: bit_hl(); break; // BIT b, (HL)
 
         default: 
         {
@@ -1266,5 +1275,30 @@ void CPU::srl_hl()
     increment_cycle();
     uint8_t n = memory.read(reg_hl.reg);
     srl(n);
+    memory.write(reg_hl.reg, n);
+}
+// BIT n, reg
+void CPU::bit(uint8_t &reg)
+{
+    increment_cycle();
+    increment_cycle();
+
+    uint8_t n = fetch_byte();
+    uint8_t result = reg & (1 << n);
+
+    flag_z = (result == 0);
+
+    flag_n = false;
+
+    flag_h = true;
+}
+// BIT n, (HL)
+void CPU::bit_hl()
+{
+    increment_cycle();
+    increment_cycle();
+
+    uint8_t n = memory.read(reg_hl.reg);
+    bit(n);
     memory.write(reg_hl.reg, n);
 }

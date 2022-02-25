@@ -149,6 +149,10 @@ class CPU
         void srl(uint8_t &reg);
         void srl_hl();
 
+        //bit operations
+        void bit(uint8_t &reg);
+        void bit_hl();
+
         //helper
         uint8_t fetch_byte();
         void reset_flags();
