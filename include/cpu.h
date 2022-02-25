@@ -157,10 +157,18 @@ class CPU
         void reset(uint8_t &reg);
         void reset_hl();
 
+        //jumps
+        void jp_nn();
+        void jp_nz_nn();
+        void jp_z_nn();
+        void jp_nc_nn();
+        void jp_c_nn();
+
         //helper
         uint8_t fetch_byte();
         void reset_flags();
         void increment_cycle();
+        void jump();
         
         void cb_opcodes();
 };

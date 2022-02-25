@@ -307,6 +307,14 @@ void CPU::execute()
         case 0x1F: rra(); break; // RRA
         case 0x0F: rrca(); break; // RRCA
 
+        //jumps
+        case 0xC3: jp_nn(); break; // JP nn
+
+        case 0xC2: jp_nz_nn(); break; // JP NZ, nn
+        case 0xCA: jp_z_nn(); break; // JP Z, nn
+        case 0xD2: jp_nc_nn(); break; // JP NC, nn
+        case 0xDA: jp_c_nn(); break; // JP C, nn
+
         //prefix cb
         case 0xCB: cb_opcodes(); break;
 
@@ -1357,4 +1365,68 @@ void CPU::reset_hl()
     uint8_t n = memory.read(reg_hl.reg);
     reset(n);
     memory.write(reg_hl.reg, n);
+}
+//JUMPs
+//helper
+void CPU::jump()
+{
+    uint8_t lo = fetch_byte();
+    uint8_t hi = fetch_byte();
+    uint16_t nn = (hi << 8) | lo;
+
+    reg_pc.reg = nn;
+}
+// JP nn
+void CPU::jp_nn()
+{
+    increment_cycle();
+    increment_cycle();
+    increment_cycle();
+    increment_cycle();
+
+    jump();
+}
+// JP NZ, nn
+void CPU::jp_nz_nn()
+{
+    increment_cycle();
+    increment_cycle();
+    increment_cycle();
+    increment_cycle();
+
+    if(!flag_z)
+        jump();
+}
+// JP Z, nn
+void CPU::jp_z_nn()
+{
+    increment_cycle();
+    increment_cycle();
+    increment_cycle();
+    increment_cycle();
+
+    if(flag_z)
+        jump();   
+}
+// JP NC, nn
+void CPU::jp_nc_nn()
+{
+    increment_cycle();
+    increment_cycle();
+    increment_cycle();
+    increment_cycle();
+
+    if(!flag_c)
+        jump();    
+}
+// JP C, nn
+void CPU::jp_c_nn()
+{
+    increment_cycle();
+    increment_cycle();
+    increment_cycle();
+    increment_cycle();
+
+    if(flag_c)
+        jump();    
 }
