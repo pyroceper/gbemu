@@ -420,6 +420,14 @@ void CPU::cb_opcodes()
         case 0xC5: set(reg_hl.lo); break; // SET b, L
         case 0xC6: set_hl(); break; // SET b, (HL)
 
+        case 0x87: reset(reg_af.hi); break; // RESET b, A
+        case 0x80: reset(reg_bc.hi); break; // RESET b, B
+        case 0x81: reset(reg_bc.lo); break; // RESET b, C
+        case 0x82: reset(reg_de.hi); break; // RESET b, D
+        case 0x83: reset(reg_de.lo); break; // RESET b, E
+        case 0x84: reset(reg_hl.hi); break; // RESET b, H
+        case 0x85: reset(reg_hl.lo); break; // RESET b, L
+        case 0x86: reset_hl(); break; // RESET b, (HL)
 
         default: 
         {
@@ -1329,5 +1337,24 @@ void CPU::set_hl()
 
     uint8_t n = memory.read(reg_hl.reg);
     set(n);
+    memory.write(reg_hl.reg, n);
+}
+// RESET n, reg
+void CPU::reset(uint8_t &reg)
+{
+    increment_cycle();
+    increment_cycle();
+
+    uint8_t n = fetch_byte();
+    reg = reg & (~(1 << n));
+}
+// RESET n, (HL)
+void CPU::reset_hl()
+{
+    increment_cycle();
+    increment_cycle();
+
+    uint8_t n = memory.read(reg_hl.reg);
+    reset(n);
     memory.write(reg_hl.reg, n);
 }

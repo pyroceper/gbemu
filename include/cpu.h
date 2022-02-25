@@ -154,6 +154,8 @@ class CPU
         void bit_hl();
         void set(uint8_t &reg);
         void set_hl();
+        void reset(uint8_t &reg);
+        void reset_hl();
 
         //helper
         uint8_t fetch_byte();
