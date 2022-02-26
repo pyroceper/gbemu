@@ -180,6 +180,14 @@ class CPU
         //restart
         void rst_n(uint8_t n);
 
+        //ret
+        void ret();
+        void ret_nz();
+        void ret_z();
+        void ret_nc();
+        void ret_c();
+        void reti();
+
         //helper
         uint8_t fetch_byte();
         void reset_flags();
@@ -187,6 +195,7 @@ class CPU
         void jump();
         void jr_jump();
         void call();
+        void ret_from_subroutine();
         
         void cb_opcodes();
 };

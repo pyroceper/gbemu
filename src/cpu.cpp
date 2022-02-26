@@ -337,6 +337,14 @@ void CPU::execute()
         case 0xF7: rst_n(0x30); // RST 30H
         case 0xFF: rst_n(0x38); // RST 38H
 
+        //return
+        case 0xC9: ret(); // RET
+        case 0xC0: ret_nz(); // RET NZ
+        case 0xC8: ret_z(); // RET Z
+        case 0xD0: ret_nc(); // RET NC
+        case 0xD8: ret_c(); // RET C
+        case 0xD9: reti(); // RETI
+
         //prefix cb
         case 0xCB: cb_opcodes(); break;
 
@@ -1596,4 +1604,70 @@ void CPU::rst_n(uint8_t n)
     memory.write(reg_sp.reg, reg_pc.lo);
 
     reg_pc.reg = n;
+}
+//returns
+//helper
+void CPU::ret_from_subroutine()
+{
+    reg_sp.reg++;
+    uint8_t lo = memory.read(reg_sp.reg);
+    reg_sp.reg++;
+    uint8_t hi = memory.read(reg_sp.reg);
+    uint16_t addr = (hi << 8) | lo;
+
+    reg_pc.reg = addr;
+}
+// RET
+void CPU::ret()
+{
+    increment_cycle();
+    increment_cycle();
+
+    ret_from_subroutine();
+}
+// RET NZ
+void CPU::ret_nz()
+{
+    increment_cycle();
+    increment_cycle(); 
+
+    if(!flag_z)
+        ret_from_subroutine();
+}
+// RET Z
+void CPU::ret_z()
+{
+    increment_cycle();
+    increment_cycle(); 
+
+    if(flag_z)
+        ret_from_subroutine();
+}
+// RET NC
+void CPU::ret_nc()
+{
+    increment_cycle();
+    increment_cycle(); 
+
+    if(!flag_c)
+        ret_from_subroutine();
+}
+// RET C
+void CPU::ret_c()
+{
+    increment_cycle();
+    increment_cycle(); 
+
+    if(flag_c)
+        ret_from_subroutine();
+}
+// RETI
+void CPU::reti()
+{
+    increment_cycle();
+    increment_cycle();
+
+    ret_from_subroutine();
+
+    interrupt_enabled = true;
 }
