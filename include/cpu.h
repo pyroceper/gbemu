@@ -172,6 +172,10 @@ class CPU
 
         //call
         void call_nn();
+        void call_nz_nn();
+        void call_z_nn();
+        void call_nc_nn();
+        void call_c_nn();
 
         //helper
         uint8_t fetch_byte();
@@ -179,6 +183,7 @@ class CPU
         void increment_cycle();
         void jump();
         void jr_jump();
+        void call();
         
         void cb_opcodes();
 };

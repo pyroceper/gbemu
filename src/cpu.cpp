@@ -318,7 +318,11 @@ void CPU::execute()
 
         //call
         case 0xCD: call_nn(); break; // CALL nn
-        
+        case 0xC4: call_nz_nn(); break; // CALL NZ, nn
+        case 0xCC: call_z_nn(); break; // CALL Z, nn
+        case 0xD4: call_nc_nn(); break; // CALL NC, nn
+        case 0xDC: call_c_nn(); break; // CALL C, nn
+
         //prefix cb
         case 0xCB: cb_opcodes(); break;
 
@@ -1494,16 +1498,12 @@ void CPU::jr_c()
         jr_jump();
 }
 //calls
-// CALL nn
-void CPU::call_nn()
-{
+//helper
+void CPU::call()
+{   
     increment_cycle();
     increment_cycle();
-    increment_cycle();
-
-    increment_cycle();
-    increment_cycle();
-    increment_cycle();
+    increment_cycle();  
 
     reg_sp.reg--;
     memory.write(reg_sp.reg, reg_pc.hi);
@@ -1511,4 +1511,53 @@ void CPU::call_nn()
     memory.write(reg_sp.reg, reg_pc.lo);  
 
     jump();
+}
+// CALL nn
+void CPU::call_nn()
+{
+    increment_cycle();
+    increment_cycle();
+    increment_cycle();
+
+    call();
+}
+// CALL NZ
+void CPU::call_nz_nn()
+{
+    increment_cycle();
+    increment_cycle();
+    increment_cycle();
+
+    if(!flag_z)
+        call();
+}
+// CALL Z
+void CPU::call_z_nn()
+{
+    increment_cycle();
+    increment_cycle();
+    increment_cycle();
+
+    if(flag_z)
+        call();
+}
+// CALL NC
+void CPU::call_nc_nn()
+{
+    increment_cycle();
+    increment_cycle();
+    increment_cycle();
+
+    if(!flag_c)
+        call();
+}
+// CALL C
+void CPU::call_c_nn()
+{
+    increment_cycle();
+    increment_cycle();
+    increment_cycle();
+
+    if(flag_c)
+        call();
 }
