@@ -170,6 +170,9 @@ class CPU
         void jr_nc();
         void jr_c();
 
+        //call
+        void call_nn();
+
         //helper
         uint8_t fetch_byte();
         void reset_flags();

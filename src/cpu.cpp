@@ -315,6 +315,9 @@ void CPU::execute()
         case 0xDA: jp_c_nn(); break; // JP C, nn
         case 0xE9: jp_hl(); break; // JP HL
         case 0x18: jr(); break; // JR n
+
+        //call
+        case 0xCD: call_nn(); break; // CALL nn
         
         //prefix cb
         case 0xCB: cb_opcodes(); break;
@@ -1489,4 +1492,23 @@ void CPU::jr_c()
 
     if(flag_c)
         jr_jump();
+}
+//calls
+// CALL nn
+void CPU::call_nn()
+{
+    increment_cycle();
+    increment_cycle();
+    increment_cycle();
+
+    increment_cycle();
+    increment_cycle();
+    increment_cycle();
+
+    reg_sp.reg--;
+    memory.write(reg_sp.reg, reg_pc.hi);
+    reg_sp.reg--;
+    memory.write(reg_sp.reg, reg_pc.lo);  
+
+    jump();
 }
