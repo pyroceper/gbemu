@@ -327,6 +327,16 @@ void CPU::execute()
         case 0xD4: call_nc_nn(); break; // CALL NC, nn
         case 0xDC: call_c_nn(); break; // CALL C, nn
 
+        //restart
+        case 0xC7: rst_n(0x00); // RST 00H
+        case 0xCF: rst_n(0x08); // RST 08H
+        case 0xD7: rst_n(0x10); // RST 10H
+        case 0xDF: rst_n(0x18); // RST 18H
+        case 0xE7: rst_n(0x20); // RST 20H
+        case 0xEF: rst_n(0x28); // RST 28H
+        case 0xF7: rst_n(0x30); // RST 30H
+        case 0xFF: rst_n(0x38); // RST 38H
+
         //prefix cb
         case 0xCB: cb_opcodes(); break;
 
@@ -1564,4 +1574,26 @@ void CPU::call_c_nn()
 
     if(flag_c)
         call();
+}
+//restart
+// RST n
+void CPU::rst_n(uint8_t n)
+{
+    //cycles += 32;
+    increment_cycle();
+    increment_cycle();
+    increment_cycle();
+    increment_cycle();
+
+    increment_cycle();
+    increment_cycle();
+    increment_cycle();
+    increment_cycle();
+    
+    reg_sp.reg--;
+    memory.write(reg_sp.reg, reg_pc.hi);
+    reg_sp.reg--;
+    memory.write(reg_sp.reg, reg_pc.lo);
+
+    reg_pc.reg = n;
 }

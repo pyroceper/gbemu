@@ -177,6 +177,9 @@ class CPU
         void call_nc_nn();
         void call_c_nn();
 
+        //restart
+        void rst_n(uint8_t n);
+
         //helper
         uint8_t fetch_byte();
         void reset_flags();
