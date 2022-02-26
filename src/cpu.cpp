@@ -315,6 +315,10 @@ void CPU::execute()
         case 0xDA: jp_c_nn(); break; // JP C, nn
         case 0xE9: jp_hl(); break; // JP HL
         case 0x18: jr(); break; // JR n
+        case 0x20: jr_nz(); break; // JR NZ, n
+        case 0x28: jr_z(); break; // JR Z, n
+        case 0x30: jr_nc(); break; // JR NC, n
+        case 0x38: jr_c(); break; // JR C, n
 
         //call
         case 0xCD: call_nn(); break; // CALL nn
