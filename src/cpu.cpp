@@ -585,14 +585,78 @@ void CPU::cb_opcodes()
         case 0xFE: set_hl(7); break; // SET 7, (HL)
         case 0xFF: set(reg_af.hi, 7); break; // SET 7, A
 
-        case 0x87: reset(reg_af.hi); break; // RESET b, A
-        case 0x80: reset(reg_bc.hi); break; // RESET b, B
-        case 0x81: reset(reg_bc.lo); break; // RESET b, C
-        case 0x82: reset(reg_de.hi); break; // RESET b, D
-        case 0x83: reset(reg_de.lo); break; // RESET b, E
-        case 0x84: reset(reg_hl.hi); break; // RESET b, H
-        case 0x85: reset(reg_hl.lo); break; // RESET b, L
-        case 0x86: reset_hl(); break; // RESET b, (HL)
+        // RES n, reg
+        case 0x80: res(reg_bc.hi, 0); break; // RES 0, B
+        case 0x81: res(reg_bc.lo, 0); break; // RES 0, C
+        case 0x82: res(reg_de.hi, 0); break; // RES 0, D
+        case 0x83: res(reg_de.lo, 0); break; // RES 0, E
+        case 0x84: res(reg_hl.hi, 0); break; // RES 0, H
+        case 0x85: res(reg_hl.lo, 0); break; // RES 0, L
+        case 0x86: res_hl(0); break; // RES 0, (HL)
+        case 0x87: res(reg_af.hi, 0); break; // RES 0, A
+
+        case 0x88: res(reg_bc.hi, 1); break; // RES 1, B
+        case 0x89: res(reg_bc.lo, 1); break; // RES 1, C
+        case 0x8A: res(reg_de.hi, 1); break; // RES 1, D
+        case 0x8B: res(reg_de.lo, 1); break; // RES 1, E
+        case 0x8C: res(reg_hl.hi, 1); break; // RES 1, H
+        case 0x8D: res(reg_hl.lo, 1); break; // RES 1, L
+        case 0x8E: res_hl(1); break; // RES 1, (HL)
+        case 0x8F: res(reg_af.hi, 1); break; // RES 1, A
+
+        case 0x90: res(reg_bc.hi, 2); break; // RES 2, B
+        case 0x91: res(reg_bc.lo, 2); break; // RES 2, C
+        case 0x92: res(reg_de.hi, 2); break; // RES 2, D
+        case 0x93: res(reg_de.lo, 2); break; // RES 2, E
+        case 0x94: res(reg_hl.hi, 2); break; // RES 2, H
+        case 0x95: res(reg_hl.lo, 2); break; // RES 2, L
+        case 0x96: res_hl(2); break; // RES 2, (HL)
+        case 0x97: res(reg_af.hi, 2); break; // RES 2, A
+
+        case 0x98: res(reg_bc.hi, 3); break; // RES 3, B
+        case 0x99: res(reg_bc.lo, 3); break; // RES 3, C
+        case 0x9A: res(reg_de.hi, 3); break; // RES 3, D
+        case 0x9B: res(reg_de.lo, 3); break; // RES 3, E
+        case 0x9C: res(reg_hl.hi, 3); break; // RES 3, H
+        case 0x9D: res(reg_hl.lo, 3); break; // RES 3, L
+        case 0x9E: res_hl(3); break; // RES 3, (HL)
+        case 0x9F: res(reg_af.hi, 3); break; // RES 3, A
+
+        case 0xA0: res(reg_bc.hi, 4); break; // RES 4, B
+        case 0xA1: res(reg_bc.lo, 4); break; // RES 4, C
+        case 0xA2: res(reg_de.hi, 4); break; // RES 4, D
+        case 0xA3: res(reg_de.lo, 4); break; // RES 4, E
+        case 0xA4: res(reg_hl.hi, 4); break; // RES 4, H
+        case 0xA5: res(reg_hl.lo, 4); break; // RES 4, L
+        case 0xA6: res_hl(4); break; // RES 4, (HL)
+        case 0xA7: res(reg_af.hi, 4); break; // RES 4, A
+
+        case 0xA8: res(reg_bc.hi, 5); break; // RES 5, B
+        case 0xA9: res(reg_bc.lo, 5); break; // RES 5, C
+        case 0xAA: res(reg_de.hi, 5); break; // RES 5, D
+        case 0xAB: res(reg_de.lo, 5); break; // RES 5, E
+        case 0xAC: res(reg_hl.hi, 5); break; // RES 5, H
+        case 0xAD: res(reg_hl.lo, 5); break; // RES 5, L
+        case 0xAE: res_hl(5); break; // RES 5, (HL)
+        case 0xAF: res(reg_af.hi, 5); break; // RES 5, A
+
+        case 0xB0: res(reg_bc.hi, 6); break; // RES 6, B
+        case 0xB1: res(reg_bc.lo, 6); break; // RES 6, C
+        case 0xB2: res(reg_de.hi, 6); break; // RES 6, D
+        case 0xB3: res(reg_de.lo, 6); break; // RES 6, E
+        case 0xB4: res(reg_hl.hi, 6); break; // RES 6, H
+        case 0xB5: res(reg_hl.lo, 6); break; // RES 6, L
+        case 0xB6: res_hl(6); break; // RES 6, (HL)
+        case 0xB7: res(reg_af.hi, 6); break; // RES 6, A
+
+        case 0xB8: res(reg_bc.hi, 7); break; // RES 7, B
+        case 0xB9: res(reg_bc.lo, 7); break; // RES 7, C
+        case 0xBA: res(reg_de.hi, 7); break; // RES 7, D
+        case 0xBB: res(reg_de.lo, 7); break; // RES 7, E
+        case 0xBC: res(reg_hl.hi, 7); break; // RES 7, H
+        case 0xBD: res(reg_hl.lo, 7); break; // RES 7, L
+        case 0xBE: res_hl(7); break; // RES 7, (HL)
+        case 0xBF: res(reg_af.hi, 7); break; // RES 7, A
 
         default: 
         {
@@ -1502,23 +1566,22 @@ void CPU::set_hl(uint8_t b)
     set(n, b);
     memory.write(reg_hl.reg, n);
 }
-// RESET n, reg
-void CPU::reset(uint8_t &reg)
+// RES n, reg
+void CPU::res(uint8_t &reg, uint8_t b)
 {
     increment_cycle();
     increment_cycle();
 
-    uint8_t n = fetch_byte();
-    reg = reg & (~(1 << n));
+    reg = reg & (~(1 << b));
 }
-// RESET n, (HL)
-void CPU::reset_hl()
+// RES n, (HL)
+void CPU::res_hl(uint8_t b)
 {
     increment_cycle();
     increment_cycle();
 
     uint8_t n = memory.read(reg_hl.reg);
-    reset(n);
+    res(n, b);
     memory.write(reg_hl.reg, n);
 }
 //JUMPs

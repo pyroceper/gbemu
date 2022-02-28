@@ -154,8 +154,8 @@ class CPU
         void bit_hl(uint8_t b);
         void set(uint8_t &reg, uint8_t b);
         void set_hl(uint8_t b);
-        void reset(uint8_t &reg);
-        void reset_hl();
+        void res(uint8_t &reg, uint8_t b);
+        void res_hl(uint8_t b);
 
         //jumps
         void jp_nn();
