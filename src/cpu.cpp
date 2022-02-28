@@ -440,14 +440,78 @@ void CPU::cb_opcodes()
         case 0x3D: srl(reg_hl.lo); break; // SRL L
         case 0x3E: srl_hl(); break; // SRL (HL)    
 
-        case 0x47: bit(reg_af.hi); break; // BIT b, A
-        case 0x40: bit(reg_bc.hi); break; // BIT b, B
-        case 0x41: bit(reg_bc.lo); break; // BIT b, C
-        case 0x42: bit(reg_de.hi); break; // BIT b, D
-        case 0x43: bit(reg_de.lo); break; // BIT b, E
-        case 0x44: bit(reg_hl.hi); break; // BIT b, H
-        case 0x45: bit(reg_hl.lo); break; // BIT b, L
-        case 0x46: bit_hl(); break; // BIT b, (HL)
+        //BIT b, reg
+        case 0x40: bit(reg_bc.hi, 0); break; // BIT 0, B
+        case 0x41: bit(reg_bc.lo, 0); break; // BIT 0, C
+        case 0x42: bit(reg_de.hi, 0); break; // BIT 0, D
+        case 0x43: bit(reg_de.lo, 0); break; // BIT 0, E
+        case 0x44: bit(reg_hl.hi, 0); break; // BIT 0, H
+        case 0x45: bit(reg_hl.lo, 0); break; // BIT 0, L
+        case 0x46: bit_hl(0); break; // BIT 0, (HL)
+        case 0x47: bit(reg_af.hi, 0); break; // BIT 0, A
+
+        case 0x48: bit(reg_bc.hi, 1); break; // BIT 1, B
+        case 0x49: bit(reg_bc.lo, 1); break; // BIT 1, C
+        case 0x4A: bit(reg_de.hi, 1); break; // BIT 1, D
+        case 0x4B: bit(reg_de.lo, 1); break; // BIT 1, E
+        case 0x4C: bit(reg_hl.hi, 1); break; // BIT 1, H
+        case 0x4D: bit(reg_hl.lo, 1); break; // BIT 1, L
+        case 0x4E: bit_hl(1); break; // BIT 1, (HL)
+        case 0x4F: bit(reg_af.hi, 1); break; // BIT 1, A
+
+        case 0x50: bit(reg_bc.hi, 2); break; // BIT 2, B
+        case 0x51: bit(reg_bc.lo, 2); break; // BIT 2, C
+        case 0x52: bit(reg_de.hi, 2); break; // BIT 2, D
+        case 0x53: bit(reg_de.lo, 2); break; // BIT 2, E
+        case 0x54: bit(reg_hl.hi, 2); break; // BIT 2, H
+        case 0x55: bit(reg_hl.lo, 2); break; // BIT 2, L
+        case 0x56: bit_hl(2); break; // BIT 2, (HL)
+        case 0x57: bit(reg_af.hi, 2); break; // BIT 2, A    
+
+        case 0x58: bit(reg_bc.hi, 3); break; // BIT 3, B
+        case 0x59: bit(reg_bc.lo, 3); break; // BIT 3, C
+        case 0x5A: bit(reg_de.hi, 3); break; // BIT 3, D
+        case 0x5B: bit(reg_de.lo, 3); break; // BIT 3, E
+        case 0x5C: bit(reg_hl.hi, 3); break; // BIT 3, H
+        case 0x5D: bit(reg_hl.lo, 3); break; // BIT 3, L
+        case 0x5E: bit_hl(3); break; // BIT 3, (HL)
+        case 0x5F: bit(reg_af.hi, 3); break; // BIT 3, A   
+
+        case 0x60: bit(reg_bc.hi, 4); break; // BIT 4, B
+        case 0x61: bit(reg_bc.lo, 4); break; // BIT 4, C
+        case 0x62: bit(reg_de.hi, 4); break; // BIT 4, D
+        case 0x63: bit(reg_de.lo, 4); break; // BIT 4, E
+        case 0x64: bit(reg_hl.hi, 4); break; // BIT 4, H
+        case 0x65: bit(reg_hl.lo, 4); break; // BIT 4, L
+        case 0x66: bit_hl(4); break; // BIT 4, (HL)
+        case 0x67: bit(reg_af.hi, 4); break; // BIT 4, A   
+
+        case 0x68: bit(reg_bc.hi, 5); break; // BIT 5, B
+        case 0x69: bit(reg_bc.lo, 5); break; // BIT 5, C
+        case 0x6A: bit(reg_de.hi, 5); break; // BIT 5, D
+        case 0x6B: bit(reg_de.lo, 5); break; // BIT 5, E
+        case 0x6C: bit(reg_hl.hi, 5); break; // BIT 5, H
+        case 0x6D: bit(reg_hl.lo, 5); break; // BIT 5, L
+        case 0x6E: bit_hl(5); break; // BIT 5, (HL)
+        case 0x6F: bit(reg_af.hi, 5); break; // BIT 5, A 
+
+        case 0x70: bit(reg_bc.hi, 6); break; // BIT 6, B
+        case 0x71: bit(reg_bc.lo, 6); break; // BIT 6, C
+        case 0x72: bit(reg_de.hi, 6); break; // BIT 6, D
+        case 0x73: bit(reg_de.lo, 6); break; // BIT 6, E
+        case 0x74: bit(reg_hl.hi, 6); break; // BIT 6, H
+        case 0x75: bit(reg_hl.lo, 6); break; // BIT 6, L
+        case 0x76: bit_hl(6); break; // BIT 6, (HL)
+        case 0x77: bit(reg_af.hi, 6); break; // BIT 6, A   
+
+        case 0x78: bit(reg_bc.hi, 7); break; // BIT 7, B
+        case 0x79: bit(reg_bc.lo, 7); break; // BIT 7, C
+        case 0x7A: bit(reg_de.hi, 7); break; // BIT 7, D
+        case 0x7B: bit(reg_de.lo, 7); break; // BIT 7, E
+        case 0x7C: bit(reg_hl.hi, 7); break; // BIT 7, H
+        case 0x7D: bit(reg_hl.lo, 7); break; // BIT 7, L
+        case 0x7E: bit_hl(7); break; // BIT 7, (HL)
+        case 0x7F: bit(reg_af.hi, 7); break; // BIT 7, A         
 
         case 0xC7: set(reg_af.hi); break; // SET b, A
         case 0xC0: set(reg_bc.hi); break; // SET b, B
@@ -1334,13 +1398,12 @@ void CPU::srl_hl()
     memory.write(reg_hl.reg, n);
 }
 // BIT n, reg
-void CPU::bit(uint8_t &reg)
+void CPU::bit(uint8_t &reg, uint8_t b)
 {
     increment_cycle();
     increment_cycle();
 
-    uint8_t n = fetch_byte();
-    uint8_t result = reg & (1 << n);
+    uint8_t result = reg & (1 << b);
 
     flag_z = (result == 0);
 
@@ -1349,13 +1412,13 @@ void CPU::bit(uint8_t &reg)
     flag_h = true;
 }
 // BIT n, (HL)
-void CPU::bit_hl()
+void CPU::bit_hl(uint8_t b)
 {
     increment_cycle();
     increment_cycle();
 
     uint8_t n = memory.read(reg_hl.reg);
-    bit(n);
+    bit(n, b);
     memory.write(reg_hl.reg, n);
 }
 // SET n, reg

@@ -150,8 +150,8 @@ class CPU
         void srl_hl();
 
         //bit operations
-        void bit(uint8_t &reg);
-        void bit_hl();
+        void bit(uint8_t &reg, uint8_t b);
+        void bit_hl(uint8_t b);
         void set(uint8_t &reg);
         void set_hl();
         void reset(uint8_t &reg);
