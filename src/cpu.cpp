@@ -513,14 +513,77 @@ void CPU::cb_opcodes()
         case 0x7E: bit_hl(7); break; // BIT 7, (HL)
         case 0x7F: bit(reg_af.hi, 7); break; // BIT 7, A         
 
-        case 0xC7: set(reg_af.hi); break; // SET b, A
-        case 0xC0: set(reg_bc.hi); break; // SET b, B
-        case 0xC1: set(reg_bc.lo); break; // SET b, C
-        case 0xC2: set(reg_de.hi); break; // SET b, D
-        case 0xC3: set(reg_de.lo); break; // SET b, E
-        case 0xC4: set(reg_hl.hi); break; // SET b, H
-        case 0xC5: set(reg_hl.lo); break; // SET b, L
-        case 0xC6: set_hl(); break; // SET b, (HL)
+        // SET b, reg
+        case 0xC0: set(reg_bc.hi, 0); break; // SET 0, B
+        case 0xC1: set(reg_bc.lo, 0); break; // SET 0, C
+        case 0xC2: set(reg_de.hi, 0); break; // SET 0, D
+        case 0xC3: set(reg_de.lo, 0); break; // SET 0, E
+        case 0xC4: set(reg_hl.hi, 0); break; // SET 0, H
+        case 0xC5: set(reg_hl.lo, 0); break; // SET 0, L
+        case 0xC6: set_hl(0); break; // SET 0, (HL)
+        case 0xC7: set(reg_af.hi, 0); break; // SET 0, A
+
+        case 0xC8: set(reg_bc.hi, 1); break; // SET 1, B
+        case 0xC9: set(reg_bc.lo, 1); break; // SET 1, C
+        case 0xCA: set(reg_de.hi, 1); break; // SET 1, D
+        case 0xCB: set(reg_de.lo, 1); break; // SET 1, E
+        case 0xCC: set(reg_hl.hi, 1); break; // SET 1, H
+        case 0xCD: set(reg_hl.lo, 1); break; // SET 1, L
+        case 0xCE: set_hl(1); break; // SET 1, (HL)
+        case 0xCF: set(reg_af.hi, 1); break; // SET 1, A
+
+        case 0xD0: set(reg_bc.hi, 2); break; // SET 2, B
+        case 0xD1: set(reg_bc.lo, 2); break; // SET 2, C
+        case 0xD2: set(reg_de.hi, 2); break; // SET 2, D
+        case 0xD3: set(reg_de.lo, 2); break; // SET 2, E
+        case 0xD4: set(reg_hl.hi, 2); break; // SET 2, H
+        case 0xD5: set(reg_hl.lo, 2); break; // SET 2, L
+        case 0xD6: set_hl(2); break; // SET 2, (HL)
+        case 0xD7: set(reg_af.hi, 2); break; // SET 2, A
+
+        case 0xD8: set(reg_bc.hi, 3); break; // SET 3, B
+        case 0xD9: set(reg_bc.lo, 3); break; // SET 3, C
+        case 0xDA: set(reg_de.hi, 3); break; // SET 3, D
+        case 0xDB: set(reg_de.lo, 3); break; // SET 3, E
+        case 0xDC: set(reg_hl.hi, 3); break; // SET 3, H
+        case 0xDD: set(reg_hl.lo, 3); break; // SET 3, L
+        case 0xDE: set_hl(3); break; // SET 3, (HL)
+        case 0xDF: set(reg_af.hi, 3); break; // SET 3, A
+
+        case 0xE0: set(reg_bc.hi, 4); break; // SET 4, B
+        case 0xE1: set(reg_bc.lo, 4); break; // SET 4, C
+        case 0xE3: set(reg_de.lo, 4); break; // SET 4, E
+        case 0xE4: set(reg_hl.hi, 4); break; // SET 4, H
+        case 0xE5: set(reg_hl.lo, 4); break; // SET 4, L
+        case 0xE6: set_hl(4); break; // SET 4, (HL)
+        case 0xE7: set(reg_af.hi, 4); break; // SET 4, A
+
+        case 0xE8: set(reg_bc.hi, 5); break; // SET 5, B
+        case 0xE9: set(reg_bc.lo, 5); break; // SET 5, C
+        case 0xEA: set(reg_de.hi, 5); break; // SET 5, D
+        case 0xEB: set(reg_de.lo, 5); break; // SET 5, E
+        case 0xEC: set(reg_hl.hi, 5); break; // SET 5, H
+        case 0xED: set(reg_hl.lo, 5); break; // SET 5, L
+        case 0xEE: set_hl(5); break; // SET 5, (HL)
+        case 0xEF: set(reg_af.hi, 5); break; // SET 5, A
+
+        case 0xF0: set(reg_bc.hi, 6); break; // SET 6, B
+        case 0xF1: set(reg_bc.lo, 6); break; // SET 6, C
+        case 0xF2: set(reg_de.hi, 6); break; // SET 6, D
+        case 0xF3: set(reg_de.lo, 6); break; // SET 6, E
+        case 0xF4: set(reg_hl.hi, 6); break; // SET 6, H
+        case 0xF5: set(reg_hl.lo, 6); break; // SET 6, L
+        case 0xF6: set_hl(6); break; // SET 6, (HL)
+        case 0xF7: set(reg_af.hi, 6); break; // SET 6, A
+
+        case 0xF8: set(reg_bc.hi, 7); break; // SET 7, B
+        case 0xF9: set(reg_bc.lo, 7); break; // SET 7, C
+        case 0xFA: set(reg_de.hi, 7); break; // SET 7, D
+        case 0xFB: set(reg_de.lo, 7); break; // SET 7, E
+        case 0xFC: set(reg_hl.hi, 7); break; // SET 7, H
+        case 0xFD: set(reg_hl.lo, 7); break; // SET 7, L
+        case 0xFE: set_hl(7); break; // SET 7, (HL)
+        case 0xFF: set(reg_af.hi, 7); break; // SET 7, A
 
         case 0x87: reset(reg_af.hi); break; // RESET b, A
         case 0x80: reset(reg_bc.hi); break; // RESET b, B
@@ -1422,22 +1485,21 @@ void CPU::bit_hl(uint8_t b)
     memory.write(reg_hl.reg, n);
 }
 // SET n, reg
-void CPU::set(uint8_t &reg)
+void CPU::set(uint8_t &reg, uint8_t b)
 {
     increment_cycle();
     increment_cycle();
 
-    uint8_t n = fetch_byte();
-    reg = reg | (1 << n);
+    reg = reg | (1 << b);
 }
 // SET n, (HL)
-void CPU::set_hl()
+void CPU::set_hl(uint8_t b)
 {
     increment_cycle();
     increment_cycle();
 
     uint8_t n = memory.read(reg_hl.reg);
-    set(n);
+    set(n, b);
     memory.write(reg_hl.reg, n);
 }
 // RESET n, reg

@@ -152,8 +152,8 @@ class CPU
         //bit operations
         void bit(uint8_t &reg, uint8_t b);
         void bit_hl(uint8_t b);
-        void set(uint8_t &reg);
-        void set_hl();
+        void set(uint8_t &reg, uint8_t b);
+        void set_hl(uint8_t b);
         void reset(uint8_t &reg);
         void reset_hl();
 
