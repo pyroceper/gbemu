@@ -45,6 +45,17 @@ class CPU
         bool halted;
         bool interrupt_enabled;
 
+        //interrupt registers
+        const uint16_t interrupt_enable = 0xFFFF;
+        const uint16_t interrupt_flag = 0xFF0F;
+
+        //interrupt vector
+        const uint8_t iv_v_blank = 0x40;
+        const uint8_t iv_lcd_stat = 0x48;
+        const uint8_t iv_timer = 0x50;
+        const uint8_t iv_serial = 0x58;
+        const uint8_t iv_joypad = 0x60;
+
         //instructions
         void ld_nn_n(uint8_t &reg);
         void ld_rr(uint8_t &reg1, uint8_t &reg2);
